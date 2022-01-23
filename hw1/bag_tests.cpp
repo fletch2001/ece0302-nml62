@@ -26,7 +26,7 @@ TEST_CASE(".add(entry)","[bag]")
     {
       SECTION("b.add(i = " + std::to_string(i) + ")")
       {
-        REQUIRE(b.add(i)==1);
+        REQUIRE(b.add(i)==true);
       }
     }
   }
@@ -39,18 +39,18 @@ TEST_CASE(".remove(entry)","[bag]")
   {
     for(int i = 0; i < 31; i++)
     {
-      REQUIRE(b.add(i)==1);
+      REQUIRE(b.add(i)==true);
     }
     
-    REQUIRE(b.contains(0)==1);
-    REQUIRE(b.contains(30)==1);
+    REQUIRE(b.contains(0)==true);
+    REQUIRE(b.contains(30)==true);
   }
 
   for(int i = 30; i >= 0; i--)
   {
-    REQUIRE(b.remove(i)==1);
+    REQUIRE(b.remove(i)==true);
   }
-  REQUIRE(b.isEmpty()==1);
+  REQUIRE(b.isEmpty()==true);
 }
 
 TEST_CASE(".getFrequency()","[bag]")
@@ -73,11 +73,11 @@ TEST_CASE(".clear()","[bag]")
   {
     b.add(i);
   }
-  REQUIRE(b.isEmpty()==0);
+  REQUIRE(b.isEmpty()==false);
   REQUIRE(b.getCurrentSize()==20);
   b.clear();
-  REQUIRE(b.isEmpty()==1);
-  REQUIRE(b.getCurrentSize()==0);
+  REQUIRE(b.isEmpty()==true);
+  REQUIRE(b.getCurrentSize()==false);
 }
 
 TEST_CASE("adding then clearing and adding over maxSize items", "[bag]")
@@ -89,11 +89,11 @@ TEST_CASE("adding then clearing and adding over maxSize items", "[bag]")
     {
       b.add(i);
     }
-    REQUIRE(b.isEmpty()==0);
+    REQUIRE(b.isEmpty()==false);
     REQUIRE(b.getCurrentSize()==20);
     b.clear();
-    REQUIRE(b.isEmpty()==1);
-    REQUIRE(b.getCurrentSize()==0);
+    REQUIRE(b.isEmpty()==true);
+    REQUIRE(b.getCurrentSize()==false);
   }
 
   SECTION("adding again")
@@ -104,7 +104,7 @@ TEST_CASE("adding then clearing and adding over maxSize items", "[bag]")
       {
         SECTION("b.add( i = " + std::to_string(i) + " )")
         {
-          REQUIRE(b.add(i)==1);
+          REQUIRE(b.add(i)==true);
         }
       }
     }
@@ -115,7 +115,7 @@ TEST_CASE("adding then clearing and adding over maxSize items", "[bag]")
       {
         SECTION("b.add(i = " + std::to_string(i) + ")")
         {
-          REQUIRE(b.add(i)==1);
+          REQUIRE(b.add(i)==true);
         }
       }
     }
@@ -146,12 +146,12 @@ TEST_CASE("CONTAINS","[Bag]")
   b.add(0);
   b.add(1);
 
-  REQUIRE(b.contains(0)==1);
-  REQUIRE(b.contains(1)==1);
-  REQUIRE(b.contains(2)==0);
+  REQUIRE(b.contains(0)==true);
+  REQUIRE(b.contains(1)==true);
+  REQUIRE(b.contains(2)==false);
 
   b.add(2);
-  REQUIRE(b.contains(2)==1);
+  REQUIRE(b.contains(2)==true);
 }
 
 TEST_CASE("REMOVE and checkcurrentsize", "[Bag]")
