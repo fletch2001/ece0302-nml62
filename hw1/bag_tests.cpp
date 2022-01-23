@@ -15,7 +15,7 @@ TEST_CASE(".add(entry)","[bag]")
     {
       SECTION("b.add( i = " + std::to_string(i) + " )")
       {
-        REQUIRE(b.add(i)==1);
+        REQUIRE(b.add(i)==true);
       }
     }
   }
