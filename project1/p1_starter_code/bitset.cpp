@@ -1,5 +1,9 @@
 #include "bitset.hpp"
 
+/** default constructor
+ * initializes bitset to array of type intmax_t of size 8.
+ * sets all bits in array to 0 and sets isValid to true.
+*/
 Bitset::Bitset()
 {
     N = 8;
@@ -13,7 +17,11 @@ Bitset::Bitset()
     isValid = true;
 }
 
-// TODO COMMENT
+/** constructor that takes size argument
+ * takes intmax_t type argument 'size' for size of bitset.
+ * as long as size is > 0, initializes the bitset of size size to all zeroes and sets isValid to true
+ * otherwise, sets isValid to false and does nothing else
+ */
 Bitset::Bitset(intmax_t size)
 {
     if(size <= 0)
@@ -38,7 +46,13 @@ Bitset::Bitset(intmax_t size)
     }
 }
 
-// TODO COMMENT
+/** constructor with bitstring argument
+ * takes a string of bits as the argument (e.g. "00010000")
+ * and converts string to bitset. If any element in string is not a '1' or a '0', the bitset is invalid and
+ * the program stops reading in bits
+ * 
+ * sets isValid to true when successfully setting bitset and false when above condition is not met
+ */
 Bitset::Bitset(const std::string & value)
 {
     N = value.length();
@@ -60,7 +74,9 @@ Bitset::Bitset(const std::string & value)
     }
 }
 
-// TODO COMMENT
+/** Default destructor
+ * Deletes bit_array and deallocates memory for array
+ */
 Bitset::~Bitset()
 {
     //delete and deallocate bit array if N > 0

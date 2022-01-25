@@ -36,6 +36,15 @@ TEST_CASE( "constructors")
             REQUIRE(a.good() == false);
         }
 
+        SECTION( "size 1")
+        {
+            Bitset a(1);
+            REQUIRE(a.size() == 1);
+            REQUIRE(a.asString() == "0");
+            a.toggle(0);
+            REQUIRE(a.asString() == "1");
+        }
+
         SECTION( "size 8" )
         {
             Bitset b(8);
