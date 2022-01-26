@@ -13,7 +13,6 @@ Bitset::Bitset()
     {
         bit_array[i] = 0;
     }
-    
     isValid = true;
 }
 
