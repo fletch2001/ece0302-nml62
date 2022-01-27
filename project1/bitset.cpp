@@ -25,6 +25,7 @@ Bitset::Bitset(intmax_t size)
 {
     if(size <= 0)
     {
+        N = 0;
         isValid = false;
     }
     else
@@ -55,20 +56,24 @@ Bitset::Bitset(intmax_t size)
 Bitset::Bitset(const std::string & value)
 {
     N = value.length();
-    bit_array = new intmax_t[N];
-    isValid = true;
-    for(unsigned int i = 0; i < value.length(); i++)
-    {
-        if(value[i] != '1' && value[i] != '0')
+    if(N <= 0){
+        isValid = false;
+    }else{
+        bit_array = new intmax_t[N];
+        isValid = true;
+        for(unsigned int i = 0; i < value.length(); i++)
         {
-            isValid = false;
-            break;
-        }
-        else
-        {
-            isValid = true;
-            if(value[i] == '1') set(i);
-            else reset(i);
+            if(value[i] != '1' && value[i] != '0')
+            {
+                isValid = false;
+                break;
+            }
+            else
+            {
+                isValid = true;
+                if(value[i] == '1') set(i);
+                else reset(i);
+            }
         }
     }
 }
@@ -81,50 +86,51 @@ Bitset::~Bitset()
     //delete and deallocate bit array if N > 0
     //assign nullptr to bit_array
     if(size() > 0) delete [] bit_array;
+        //else delete bit_array;
     bit_array = nullptr;
 }
 
-// TODO COMMENT
+/** returns size of bitset */
 intmax_t Bitset::size() const
 {
     return N;
 }
 
-// TODO COMMENT
+/** returns validity of bitset */
 bool Bitset::good() const
 {
     return isValid;
 }
 
-// TODO COMMENT
+/** sets bit at index index to a 1. if index is >=0 or <N, bitset is marked invalid */
 void Bitset::set(intmax_t index)
 {
     if(index >= 0 && index < N) bit_array[index] = 1;
     else isValid = false;
 }
 
-// TODO COMMENT
+/** sets bit at index index to a 0. if index is >=0 or <N, bitset is marked invalid */
 void Bitset::reset(intmax_t index)
 {
     if(index >= 0 && index < N) bit_array[index] = 0;
     else isValid = false;
 }
 
-// TODO COMMENT
+/** toggles index index. if index is >=0 or <N, bitset is marked invalid */
 void Bitset::toggle(intmax_t index)
 {
     if(index >= 0 && index < N) bit_array[index] = !bit_array[index];
     else isValid = false;
 }
 
-// TODO COMMENT
+/** returns bool logic value of bit at index index. if index is out of range returns false */
 bool Bitset::test(intmax_t index)
 {
     if(index >= 0 && index < N) return bit_array[index];
     else return isValid = false;
 }
 
-// TODO COMMENT
+/** assembles and returns bitstring of bitset */
 std::string Bitset::asString() const
 {
     std::string bitString;
