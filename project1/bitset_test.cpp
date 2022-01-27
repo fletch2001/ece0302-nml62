@@ -168,4 +168,28 @@ TEST_CASE( ".test()" ){
     REQUIRE(!a.test(a.size()));
 }
 
-//TEST_CASE(""
+//testing bitstrings
+TEST_CASE("bit strings"){
+    unsigned int max_string_size = 256;
+    std::string bitString(max_string_size, '0');
+
+    //REQUIRE(bitString == "00000000"); //just to check initial bitstring
+
+    //Bitset b(8);
+
+    for(int i = 0; i < max_string_size; i++)
+    {
+        int mask[] = {(i >> 0) % 2, (i >> 1) % 2, (i >> 2) % 2, (i >> 3) % 2, (i >> 4) % 2, (i >> 5) % 2, (i >> 6) % 2, (i >> 7) % 2};
+        //bitString = std::to_string((i >> 7) % 2) + std::to_string((i >> 6) % 2) + std::to_string((i >> 5) % 2) + std::to_string((i >> 4) % 2) + std::to_string((i >> 3) % 2) + std::to_string((i >> 2) % 2) + std::to_string((i >> 1)% 2) + std::to_string(i % 2);
+        bitString = std::to_string(mask[7]) + std::to_string(mask[6]) + std::to_string(mask[5]) + std::to_string(mask[4]) + std::to_string(mask[3]) + std::to_string(mask[2]) + std::to_string(mask[1]) + std::to_string(mask[0]);
+        Bitset b(bitString);
+        // SECTION("using toggle to set bits")
+        // {
+        //     if(mask[0])
+        // }
+        REQUIRE(bitString == b.asString());
+        //std::cout << i << " " << bitString << std::endl;
+        //REQUIRE()
+    }
+
+}
