@@ -3,10 +3,10 @@
 #include "catch.hpp"
 
 #include "bitset.hpp"
+#include <cmath>
 
 // THIS IS JUST AN EXAMPLE
 // There should be at least one test per Bitset method
-
 TEST_CASE( "Test bitset construction", "[bitset]" ) {
 
     Bitset b;  
@@ -147,6 +147,7 @@ TEST_CASE( ".reset()" ){
         REQUIRE(a.asString() == bits);
     }
 
+    //testing reset invalidity
     a.reset(a.size());
 
     REQUIRE(!a.good());
@@ -155,41 +156,84 @@ TEST_CASE( ".reset()" ){
 //testing test
 TEST_CASE( ".test()" ){
     Bitset a(12);
+    SECTION("testing valid test"){
+        for(int i = 0; i < a.size(); i++)
+        {
+            REQUIRE(a.test(i) == false);
 
-    for(int i = 0; i < a.size(); i++)
-    {
-        REQUIRE(a.test(i) == false);
+            a.toggle(i);
 
-        a.toggle(i);
-
-        REQUIRE(a.test(i) == true);
+            REQUIRE(a.test(i) == true);
+        }
+        REQUIRE(a.test(a.size()-1));
     }
-    REQUIRE(a.test(a.size()-1));
-    REQUIRE(!a.test(a.size()));
+    SECTION("testing invalid index"){
+        a.toggle(7);
+        REQUIRE(a.test(7));
+        REQUIRE(a.good());
+        REQUIRE(!a.test(12));
+        REQUIRE(a.test(7));
+        REQUIRE(!a.good());
+    }
+    
 }
 
 //testing bitstrings
 TEST_CASE("bit strings"){
     unsigned int max_string_size = 256;
-    std::string bitString(max_string_size, '0');
+    std::string bitString(std::log(max_string_size)/std::log(2), '0');
 
-    //REQUIRE(bitString == "00000000"); //just to check initial bitstring
+    REQUIRE(bitString == "00000000"); //just to check initial bitstring
 
-    //Bitset b(8);
-
-    for(int i = 0; i < max_string_size; i++)
-    {
-        int mask[] = {(i >> 0) % 2, (i >> 1) % 2, (i >> 2) % 2, (i >> 3) % 2, (i >> 4) % 2, (i >> 5) % 2, (i >> 6) % 2, (i >> 7) % 2};
-        //bitString = std::to_string((i >> 7) % 2) + std::to_string((i >> 6) % 2) + std::to_string((i >> 5) % 2) + std::to_string((i >> 4) % 2) + std::to_string((i >> 3) % 2) + std::to_string((i >> 2) % 2) + std::to_string((i >> 1)% 2) + std::to_string(i % 2);
-        bitString = std::to_string(mask[7]) + std::to_string(mask[6]) + std::to_string(mask[5]) + std::to_string(mask[4]) + std::to_string(mask[3]) + std::to_string(mask[2]) + std::to_string(mask[1]) + std::to_string(mask[0]);
+    SECTION("testing bitstring initialization and size"){
         Bitset b(bitString);
-        // SECTION("using toggle to set bits")
-        // {
-        //     if(mask[0])
-        // }
-        REQUIRE(bitString == b.asString());
-        //std::cout << i << " " << bitString << std::endl;
-        //REQUIRE()
+        REQUIRE(b.asString() == bitString);
+        REQUIRE(b.size() == std::log(max_string_size)/std::log(2));
     }
+    SECTION("bitstrings to 255"){
+        for(int i = 0; i < max_string_size; i++)
+        {
+            Bitset b(bitString);
+            REQUIRE(bitString == b.asString());
+            
+            //increment bitstring
+            int mask[] = {(i >> 0) % 2, (i >> 1) % 2, (i >> 2) % 2, (i >> 3) % 2, (i >> 4) % 2, (i >> 5) % 2, (i >> 6) % 2, (i >> 7) % 2};
+            bitString = std::to_string(mask[7]) + std::to_string(mask[6]) + std::to_string(mask[5]) + std::to_string(mask[4]) + std::to_string(mask[3]) + std::to_string(mask[2]) + std::to_string(mask[1]) + std::to_string(mask[0]);
+            REQUIRE(b.good());
+            REQUIRE(b.size() == std::log(max_string_size)/std::log(2));
+        }
+    }
+}
 
+//makes sure toggling of all positions works and invalid toggling invalidates bitset
+TEST_CASE("bitstring of 255 by toggling"){
+
+    std::string bitString = "00000000";
+    Bitset b(8);
+
+    SECTION("valid toggling") {
+        for(int i = 0; i < 255; i++){
+            //Bitset b(8);
+            int mask[] = {(i >> 0) % 2, (i >> 1) % 2, (i >> 2) % 2, (i >> 3) % 2, (i >> 4) % 2, (i >> 5) % 2, (i >> 6) % 2, (i >> 7) % 2};
+            bitString = std::to_string(mask[7]) + std::to_string(mask[6]) + std::to_string(mask[5]) + std::to_string(mask[4]) + std::to_string(mask[3]) + std::to_string(mask[2]) + std::to_string(mask[1]) + std::to_string(mask[0]);
+
+            for(int j = 0; j < b.size(); j++) if(mask[j] != b.test(b.size() - 1 - j)) b.toggle(b.size()-1 -j);
+            REQUIRE(b.good());
+            REQUIRE(b.asString() == bitString);
+        }
+    }
+    SECTION("invalid toggling") {
+        for(int i = 0; i < 255; i++){
+            //Bitset b(8);
+            int mask[] = {(i >> 0) % 2, (i >> 1) % 2, (i >> 2) % 2, (i >> 3) % 2, (i >> 4) % 2, (i >> 5) % 2, (i >> 6) % 2, (i >> 7) % 2};
+            bitString = std::to_string(mask[7]) + std::to_string(mask[6]) + std::to_string(mask[5]) + std::to_string(mask[4]) + std::to_string(mask[3]) + std::to_string(mask[2]) + std::to_string(mask[1]) + std::to_string(mask[0]);
+
+            for(int j = 0; j < b.size(); j++) { 
+                if(mask[j]) {
+                    b.toggle(b.size() -j);
+                    if(j == 0) REQUIRE(!b.good());
+                }
+            }
+        }
+    }      
 }
