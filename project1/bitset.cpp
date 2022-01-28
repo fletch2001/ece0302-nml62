@@ -11,7 +11,7 @@ Bitset::Bitset()
     numEl = std::ceil(N/ELEMENT_BIT_SIZE);
     bit_array = new u_int8_t[numEl];
 
-    for(unsigned int i = 0; i < numEl; i++)
+    for(unsigned int i = 0; i < N; i++)
     {
         resetBit(i);
     }

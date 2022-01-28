@@ -14,6 +14,7 @@ TEST_CASE( "Test bitset construction", "[bitset]" ) {
     REQUIRE(b.good());
 }
 
+//testing each version of constructor
 TEST_CASE( "constructors")
 {
     SECTION( "Bitset(); default constructor")
@@ -72,6 +73,25 @@ TEST_CASE( "constructors")
             REQUIRE(c.good() == true);
             c.set(13);
             REQUIRE(c.good() == false);
+        }
+        SECTION( "size 32 ")
+        {
+            Bitset d(32);
+            REQUIRE(d.size() == 32);
+            REQUIRE(d.asString() == std::string(32, '0'));
+            REQUIRE(d.good());
+            for(int i = 0; i < 15; i++)
+            {
+                d.toggle(i);
+            }
+            REQUIRE(d.asString() == "11111111111111100000000000000000");
+            REQUIRE(d.good());
+        }
+        SECTION("invalid constructor argument")
+        {
+            Bitset e("0200001");
+            REQUIRE(e.size() == 7);
+            REQUIRE(!e.good());
         }
     }
 }
@@ -153,7 +173,7 @@ TEST_CASE( ".reset()" ){
     REQUIRE(!a.good());
 }
 
-//testing test
+//testing .test()
 TEST_CASE( ".test()" ){
     Bitset a(12);
     SECTION("testing valid test"){
@@ -175,7 +195,6 @@ TEST_CASE( ".test()" ){
         REQUIRE(a.test(7));
         REQUIRE(!a.good());
     }
-    
 }
 
 //testing bitstrings
@@ -213,8 +232,10 @@ TEST_CASE("bitstring of 255 by toggling"){
 
     SECTION("valid toggling") {
         for(int i = 0; i < 255; i++){
-            //Bitset b(8);
+            //mask to make bit string
             int mask[] = {(i >> 0) % 2, (i >> 1) % 2, (i >> 2) % 2, (i >> 3) % 2, (i >> 4) % 2, (i >> 5) % 2, (i >> 6) % 2, (i >> 7) % 2};
+            
+            //formulate bit string with mask
             bitString = std::to_string(mask[7]) + std::to_string(mask[6]) + std::to_string(mask[5]) + std::to_string(mask[4]) + std::to_string(mask[3]) + std::to_string(mask[2]) + std::to_string(mask[1]) + std::to_string(mask[0]);
 
             for(int j = 0; j < b.size(); j++) if(mask[j] != b.test(b.size() - 1 - j)) b.toggle(b.size()-1 -j);
@@ -224,8 +245,10 @@ TEST_CASE("bitstring of 255 by toggling"){
     }
     SECTION("invalid toggling") {
         for(int i = 0; i < 255; i++){
-            //Bitset b(8);
+            //mask to make bit string
             int mask[] = {(i >> 0) % 2, (i >> 1) % 2, (i >> 2) % 2, (i >> 3) % 2, (i >> 4) % 2, (i >> 5) % 2, (i >> 6) % 2, (i >> 7) % 2};
+            
+            //formulate bit string with mask
             bitString = std::to_string(mask[7]) + std::to_string(mask[6]) + std::to_string(mask[5]) + std::to_string(mask[4]) + std::to_string(mask[3]) + std::to_string(mask[2]) + std::to_string(mask[1]) + std::to_string(mask[0]);
 
             for(int j = 0; j < b.size(); j++) { 
