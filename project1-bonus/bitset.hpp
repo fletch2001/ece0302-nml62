@@ -57,6 +57,14 @@ public:
   /** assembles and returns bitstring of bitset */
   std::string asString() const;
 
+  u_int8_t getBit(intmax_t) const;
+
+  void setBit(intmax_t);
+  
+  void resetBit(intmax_t);
+  
+  void toggleBit(intmax_t);
+
 private:
   //validity boolean
   bool isValid;
@@ -64,8 +72,12 @@ private:
   //bitset size
   intmax_t N;
 
+  const intmax_t ELEMENT_BIT_SIZE = 8;
+
+  intmax_t numEl; //number of elements
+
   //pointer to bitset container array
-  intmax_t * bit_array;
+  u_int8_t * bit_array;
 };
 
 #endif
