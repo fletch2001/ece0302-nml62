@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Ex08",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "dynamic-bag-tests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dynamic-bag-tests-Debug-05e029392ca3b68d68a1.json",
+					"name" : "dynamic-bag-tests",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "submission::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-submission-Debug-83719421a2f2376de791.json",
+					"name" : "submission",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/nml/Library/Mobile Documents/com~apple~CloudDocs/_Pitt/ECE 302 - Data Structures and Algorithms/gh/hw3/dynamic_bag_starter_code/build",
+		"source" : "/Users/nml/Library/Mobile Documents/com~apple~CloudDocs/_Pitt/ECE 302 - Data Structures and Algorithms/gh/hw3/dynamic_bag_starter_code"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
