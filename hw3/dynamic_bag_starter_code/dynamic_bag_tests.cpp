@@ -110,6 +110,5 @@ TEST_CASE( "adding 41 items" ){
       REQUIRE(c.contains(i));
       REQUIRE(!c.isEmpty());
     }
-
   }
 }
