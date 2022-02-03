@@ -2,6 +2,7 @@
 #define LIMITED_SIZE_BAG_HPP
 
 #include "abstract_bag.hpp"
+#include <vector>
 
 template <typename T>
 class LimitedSizeBag: public AbstractBag<T>
@@ -40,9 +41,15 @@ public:
   // check if item is in the bag
   bool contains(const T& item) const;
 
-private:
+  //returns vector of items in bag
+  std::vector<T> getVector() const;
+ 
+  // returns max_size of bag
+  unsigned getMaxSize() const;
 
-  // TODO
+private:
+  std::vector<T> bag_vec; //vector of items
+  unsigned max_size; //max size
 };
 
 #include "limited_size_bag.tpp"
