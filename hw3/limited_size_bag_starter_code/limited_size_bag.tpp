@@ -9,8 +9,8 @@ LimitedSizeBag<T>::LimitedSizeBag() {
 template<typename T>
 LimitedSizeBag<T>::LimitedSizeBag(const LimitedSizeBag& x) {
   // set max size and vector
-  max_size = x.getMaxSize();
-  bag_vec = x.getVector();
+  max_size = x.max_size;
+  bag_vec = x.bag_vec;
 }
     
 // clear bag
@@ -23,8 +23,9 @@ LimitedSizeBag<T>::~LimitedSizeBag() {
 template<typename T>
 LimitedSizeBag<T>& LimitedSizeBag<T>::operator=(LimitedSizeBag<T>& x)
 {  
-  max_size = x.getMaxSize();
-  bag_vec = x.getVector();
+  //set max size and vector
+  max_size = x.max_size;
+  bag_vec = x.bag_vec;
 
   return *this;
 }
@@ -99,16 +100,4 @@ std::size_t LimitedSizeBag<T>::getFrequencyOf(const T & item) const
   unsigned count = 0;
   for(T i : bag_vec) if(i == item) count++;
   return count;
-}
-
-// returns vector of items in bag
-template<typename T>
-std::vector<T> LimitedSizeBag<T>::getVector() const {
-  return bag_vec;
-}
-
-// returns max size
-template<typename T>
-unsigned LimitedSizeBag<T>::getMaxSize() const {
-  return max_size;
 }

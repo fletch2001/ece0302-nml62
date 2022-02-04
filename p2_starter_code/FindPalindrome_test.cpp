@@ -17,7 +17,7 @@ using std::vector;
 using std::string;
 
 //KEY: 0 1 1 1 1 1 1 0
-const vector<vector<std::string>> palindromeStrings = {{"IsawasI"}, {"Notapalindrome"}, {"Racecar"}, {"AAAA"}, {"IsawasI"}, {"aaAAAAAa"}, {"AAAAA"}, {"bBAaaAa"}, {"BbAaaA"}, {"bBbAAa"}};
+const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalindrome"}, {"Racecar"}, {"AAAA"}, {"IsawasI"}, {"aaAAAAAa"}, {"AAAAA"}, {"bBAaaAa"}, {"BbAaaA"}, {"bBbAAa"}};
 
 TEST_CASE( "cutTest1" , "[cut-tests]" ) {
 	FindPalindrome a;
@@ -56,11 +56,11 @@ TEST_CASE( "cutTest2" ) {
 	//left is longer than right
 		SECTION( "left is longer than right" ) {
 		//pass
-		vector<string> l1 = {"Ra","ce"};
-		vector<string> r1 = {"car"};
+		vector<std::string> l1 = {"Ra","ce"};
+		vector<std::string> r1 = {"car"};
 		//fail
-		vector<string> l2 = {"aa","bb"};
-		vector<string> r2 = {"cca"};
+		vector<std::string> l2 = {"aa","bb"};
+		vector<std::string> r2 = {"cca"};
 
 			REQUIRE(a.cutTest2(l1, r1));
 			REQUIRE(a.cutTest2(l2, r2) == 0);
@@ -69,11 +69,11 @@ TEST_CASE( "cutTest2" ) {
 	//right is longer than left
 		SECTION( "right is longer than") {
 			//pass
-			vector<string> l1 = {"Rac"};
-			vector<string> r1 = {"e","car"};
+			vector<std::string> l1 = {"Rac"};
+			vector<std::string> r1 = {"e","car"};
 
-			vector<string> l2 = {"aab"};
-			vector<string> r2 = {"bbb","bcca"};
+			vector<std::string> l2 = {"aab"};
+			vector<std::string> r2 = {"bbb","bcca"};
 
 			REQUIRE(a.cutTest2(l1, r1));
 			REQUIRE(a.cutTest2(l2, r2) == 0);
@@ -114,4 +114,11 @@ TEST_CASE( "test add overload" ) {
 	REQUIRE(a.add(s));
 	vector<string> f = {"a","BB","CCC"};
 	REQUIRE(!a.add(f));
+}
+
+TEST_CASE( "add only with palindromes" ){
+	FindPalindrome a;
+	vector<string> s = {"a","AA","AaA"};
+	REQUIRE(a.add(s));
+	REQUIRE(a.number() == 1);
 }

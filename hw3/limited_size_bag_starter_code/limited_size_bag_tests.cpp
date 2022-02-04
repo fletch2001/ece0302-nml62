@@ -142,6 +142,12 @@ TEST_CASE( "copy constructor" ) {
 
   LimitedSizeBag<int> b(a);
   REQUIRE(b.getCurrentSize() == 20);
+
+  REQUIRE(b.remove(5));
+
+  REQUIRE(a.contains(5));
+  REQUIRE(a.getCurrentSize() == 20);
+
 }
 
 TEST_CASE( "= operator" ) {

@@ -10,7 +10,7 @@ private:
 	// private stuff that you define and implement goes here...
 	
 	unsigned num_palindromes;
-	std::vector<std::vector<std::string>> palindromes;
+	std::vector<std::vector<std::string > > palindromes;
 	std::vector<std::string> candidate_strings;
 
 	// ...

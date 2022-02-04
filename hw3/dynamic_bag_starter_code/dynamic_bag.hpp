@@ -40,8 +40,6 @@ public:
   // check if item is in the bag
   bool contains(const T& item) const;
 
-  T* getArrPtr() const;
-
 private:
   T* bag_arr; //bag array pointer
   unsigned int bag_size; //bag size

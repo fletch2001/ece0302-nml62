@@ -8,9 +8,12 @@ DynamicBag<T>::DynamicBag() {
 
 template<typename T>
 DynamicBag<T>::DynamicBag(const DynamicBag& x){
+  // set size and get pointer to reference bag
   this->bag_size = x.getCurrentSize();
   this->bag_arr = new T[bag_size];
-  T* copy_ptr = x.getArrPtr();
+  T* copy_ptr = x.bag_arr;
+  
+  // copy items to new bag
   for(unsigned int i = 0; i < this->bag_size; i++){
     this->bag_arr[i] = copy_ptr[i];
   }
@@ -20,6 +23,8 @@ DynamicBag<T>::DynamicBag(const DynamicBag& x){
     
 template<typename T>
 DynamicBag<T>::~DynamicBag(){
+  
+  // deallocate memory
   if(bag_size > 0) delete [] bag_arr;
   else delete bag_arr;
   bag_arr = nullptr;
@@ -28,9 +33,11 @@ DynamicBag<T>::~DynamicBag(){
 template<typename T>
 DynamicBag<T>& DynamicBag<T>::operator=(DynamicBag<T>& x)
 { 
+  // get size and pointer to reference bag
   this->bag_size = x.getCurrentSize();
   this->bag_arr = new T[bag_size];
-  T* copy_ptr = x.getArrPtr();
+  T* copy_ptr = x.bag_arr;
+
   for(unsigned int i = 0; i < this->bag_size; i++){
     this->bag_arr[i] = copy_ptr[i];
   }
@@ -57,9 +64,6 @@ bool DynamicBag<T>::add(const T& item)
   } else {
     bag_arr = new T;
   }
-
-  
-
 
   bag_arr[bag_size-1] = item;
   
@@ -94,11 +98,8 @@ bool DynamicBag<T>::remove(const T& item)
       temp = nullptr;
 
       return true;
-
-
     }
   }
-
   return false;
 }
 
@@ -137,8 +138,3 @@ std::size_t DynamicBag<T>::getFrequencyOf(const T & item) const
   for(unsigned int i = 0; i < bag_size; i++) if(bag_arr[i] == item) freq++;
   return freq;
 };
-
-template<typename T>
-T* DynamicBag<T>::getArrPtr() const {
-  return bag_arr;
-}

@@ -41,12 +41,6 @@ public:
   // check if item is in the bag
   bool contains(const T& item) const;
 
-  //returns vector of items in bag
-  std::vector<T> getVector() const;
- 
-  // returns max_size of bag
-  unsigned getMaxSize() const;
-
 private:
   std::vector<T> bag_vec; //vector of items
   unsigned max_size; //max size

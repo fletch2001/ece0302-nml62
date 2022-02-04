@@ -44,8 +44,8 @@ static string removeSpaces(const string & value) {
 void FindPalindrome::recursiveFindPalindromes(vector<string>
         candidateStringVector, vector<string> currentStringVector)
 {
-
-	// TODO need to implement this recursive function!
+	// base case
+	//if(candidateStringVector == currentStringVector) return;
 
 	// check cut test 1
 	if(!cutTest1(candidateStringVector)) return;
@@ -64,8 +64,8 @@ void FindPalindrome::recursiveFindPalindromes(vector<string>
 	string testString;
 
 	// add strings to test
-	for(string s : candidateStringVector) {
-		testString += s;
+	for(unsigned i = 0; i < candidateStringVector.size(); i++) {
+		testString += candidateStringVector[i];
 	}
 
 	//if string is a palindrome, 
@@ -74,15 +74,14 @@ void FindPalindrome::recursiveFindPalindromes(vector<string>
 		palindromes.push_back(candidateStringVector);
 	}
 
-	vector<string> newCandidate;
+	// vector<string> newCandidate;
 
-	newCandidate[0] = candidateStringVector[candidateStringVector.size() - 1];
+	// newCandidate[0] = candidateStringVector[candidateStringVector.size() - 1];
 
-	for(unsigned i = 1; i < candidateStringVector.size(); i++) {
-		newCandidate[i] = candidateStringVector[i - 1];
-	}
+	// for(unsigned i = 0; i < candidateStringVector.size(); i++) {
 
-	recursiveFindPalindromes( , currentStringVector);
+	// }
+	return;
 }
 
 // private function to determine if a string is a palindrome (given, you
@@ -246,8 +245,8 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 bool FindPalindrome::add(const string & value)
 {
 	// check that string (in lower case) does not match a string already part of the set
-	for(string cs : candidate_strings) {
-		if (stringToLower(cs) == stringToLower(value)) return false;
+	for(unsigned i = 0; i < candidate_strings.size(); i++) {
+		if (stringToLower(candidate_strings[i]) == stringToLower(value)) return false;
 	}
 
 	// checks that each character in the string is between a-z and A-Z
@@ -260,30 +259,32 @@ bool FindPalindrome::add(const string & value)
 	candidate_strings.push_back(value);
 
 	// call recursiveFindPalindrome
+	recursiveFindPalindromes(candidate_strings, candidate_strings);
+
 	return true;
 }
 
 bool FindPalindrome::add(const vector<string> & stringVector)
 {
-	for(string s : stringVector) {
+	for(unsigned i = 0; i < stringVector.size(); i++) {
 
-		for(string cs : candidate_strings) {
-		if (stringToLower(cs) == stringToLower(s)) return false;
+		for(unsigned j = 0; j < candidate_strings.size(); j++) {
+		if (stringToLower(stringVector[i]) == stringToLower(candidate_strings[j])) return false;
 		}
 
 		// checks that each character in the string is between a-z and A-Z
 		// checks by making sure that the lowercase ASCII value of each character is with in the lowercase a-z ASCII range
-		for(char c : s) {
-			if(tolower(c) < 97 || tolower(c) > 122) return false;
+		for(unsigned j = 0; j < stringVector[i].length(); j++) {
+			if(tolower(stringVector[i][j]) < 97 || tolower(stringVector[i][j]) > 122) return false;
 		}
 	}
 
 	// add each string to candidate vector
-	for(string s : stringVector) {
-		candidate_strings.push_back(s);
-	}
+	candidate_strings = stringVector;
 
 	// call recursiveFindPalindrome
+	recursiveFindPalindromes(candidate_strings, candidate_strings);
+
 
 	return true;
 }
