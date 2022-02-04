@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "P1",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "FindPalindrome-main::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-FindPalindrome-main-Debug-7a2232220048a7621a62.json",
+					"name" : "FindPalindrome-main",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "FindPalindrome-tests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-FindPalindrome-tests-Debug-9655c354d10beb8215c6.json",
+					"name" : "FindPalindrome-tests",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "submission::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-submission-Debug-b728495dbfc0d9ff75cd.json",
+					"name" : "submission",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/nml/Library/Mobile Documents/com~apple~CloudDocs/_Pitt/ECE 302 - Data Structures and Algorithms/gh/p2_starter_code/build",
+		"source" : "/Users/nml/Library/Mobile Documents/com~apple~CloudDocs/_Pitt/ECE 302 - Data Structures and Algorithms/gh/p2_starter_code"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

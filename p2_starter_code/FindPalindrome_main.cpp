@@ -1,5 +1,5 @@
 #include <iostream>
-#include "FindPalindrome.cpp"
+#include "FindPalindrome.hpp"
 
 using namespace std;
 
