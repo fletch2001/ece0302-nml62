@@ -44,44 +44,41 @@ static string removeSpaces(const string & value) {
 void FindPalindrome::recursiveFindPalindromes(vector<string>
         candidateStringVector, vector<string> currentStringVector)
 {
-	// base case
-	//if(candidateStringVector == currentStringVector) return;
+	// base case: currentStringVector size == 0
+	if(currentStringVector.size() == 0) {
+		
+		// checking for palindrome
 
-	// check cut test 1
-	if(!cutTest1(candidateStringVector)) return;
+		string test_string; // string to concatenate vector into
+		
+		// add each element of candidateStringVector to test string
+		for(unsigned i = 0; i < candidateStringVector.size(); i++) {
+			test_string += candidateStringVector[i];
+		}
 
-	vector<string> left;
-	vector<string> right;
+		// test if string is a palindrome
+		if( isPalindrome( test_string ) ) {
+			palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
+			num_palindromes++; // increase number of palindromes
+		}
+		return;
+	} else {
 
-	for(unsigned i = 0; i < candidateStringVector.size() / 2; i++) {
-		left.push_back(candidateStringVector[i]);
-		right.push_back(candidateStringVector[i + candidateStringVector.size() / 2]);
+		// loop through length of currentStringVector. 
+		for(unsigned i = 0; i < currentStringVector.size(); i++) {
+			
+			// move ith element of currentStringVector into candidateStringVector
+			candidateStringVector.push_back( currentStringVector[i] );
+			currentStringVector.erase( currentStringVector.begin() + i );
+
+			// call findPalindromes on current combination
+			recursiveFindPalindromes( candidateStringVector, currentStringVector );
+			
+			// reassemble vector with new permutation
+			currentStringVector.insert( currentStringVector.begin(), candidateStringVector.back()); // insert last element of candidateString to first position of currentString
+			candidateStringVector.pop_back(); // remove last element from candidateString
+		}
 	}
-
-	// check cut test 2
-	if(!cutTest2(left, right)) return;
-
-	string testString;
-
-	// add strings to test
-	for(unsigned i = 0; i < candidateStringVector.size(); i++) {
-		testString += candidateStringVector[i];
-	}
-
-	//if string is a palindrome, 
-	if(isPalindrome(testString)) { 
-		num_palindromes++;
-		palindromes.push_back(candidateStringVector);
-	}
-
-	// vector<string> newCandidate;
-
-	// newCandidate[0] = candidateStringVector[candidateStringVector.size() - 1];
-
-	// for(unsigned i = 0; i < candidateStringVector.size(); i++) {
-
-	// }
-	return;
 }
 
 // private function to determine if a string is a palindrome (given, you
@@ -106,6 +103,7 @@ bool FindPalindrome::isPalindrome(string currentString) const
 FindPalindrome::FindPalindrome()
 {
 	// set number of palindromes to 0
+	permutations = 0;
 	num_palindromes = 0;
 }
 
@@ -113,7 +111,7 @@ FindPalindrome::~FindPalindrome()
 {
 	// clear vectors
 	palindromes.clear();
-	candidate_strings.clear();
+	current_strings.clear();
 }
 
 int FindPalindrome::number() const
@@ -129,7 +127,7 @@ void FindPalindrome::clear()
 
 	//clear vectors
 	palindromes.clear();
-	candidate_strings.clear();
+	current_strings.clear();
 }
 
 bool FindPalindrome::cutTest1(const vector<string> & stringVector)
@@ -245,8 +243,8 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 bool FindPalindrome::add(const string & value)
 {
 	// check that string (in lower case) does not match a string already part of the set
-	for(unsigned i = 0; i < candidate_strings.size(); i++) {
-		if (stringToLower(candidate_strings[i]) == stringToLower(value)) return false;
+	for(unsigned i = 0; i < current_strings.size(); i++) {
+		if (stringToLower(current_strings[i]) == stringToLower(value)) return false;
 	}
 
 	// checks that each character in the string is between a-z and A-Z
@@ -256,10 +254,11 @@ bool FindPalindrome::add(const string & value)
 	}
 
 	// add string to vector
-	candidate_strings.push_back(value);
+	current_strings.push_back(value);
+	vector<string> emptyVec;
 
 	// call recursiveFindPalindrome
-	recursiveFindPalindromes(candidate_strings, candidate_strings);
+	recursiveFindPalindromes(emptyVec, current_strings);
 
 	return true;
 }
@@ -268,8 +267,8 @@ bool FindPalindrome::add(const vector<string> & stringVector)
 {
 	for(unsigned i = 0; i < stringVector.size(); i++) {
 
-		for(unsigned j = 0; j < candidate_strings.size(); j++) {
-		if (stringToLower(stringVector[i]) == stringToLower(candidate_strings[j])) return false;
+		for(unsigned j = 0; j < current_strings.size(); j++) {
+		if (stringToLower(stringVector[i]) == stringToLower(current_strings[j])) return false;
 		}
 
 		// checks that each character in the string is between a-z and A-Z
@@ -280,10 +279,11 @@ bool FindPalindrome::add(const vector<string> & stringVector)
 	}
 
 	// add each string to candidate vector
-	candidate_strings = stringVector;
+	current_strings = stringVector;
+	vector<string> emptyVec;
 
 	// call recursiveFindPalindrome
-	recursiveFindPalindromes(candidate_strings, candidate_strings);
+	recursiveFindPalindromes(emptyVec, current_strings);
 
 
 	return true;

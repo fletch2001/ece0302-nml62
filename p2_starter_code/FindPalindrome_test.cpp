@@ -98,6 +98,7 @@ TEST_CASE( "cutTest2" ) {
 TEST_CASE( "test add" ) {
 	FindPalindrome a;
 	REQUIRE(a.add("a"));
+	REQUIRE(a.add("AA"));
 	REQUIRE(!a.add("A"));
 
 	REQUIRE(a.add("testing"));
@@ -120,5 +121,5 @@ TEST_CASE( "add only with palindromes" ){
 	FindPalindrome a;
 	vector<string> s = {"a","AA","AaA"};
 	REQUIRE(a.add(s));
-	REQUIRE(a.number() == 1);
+	REQUIRE(a.number() == 6);
 }
