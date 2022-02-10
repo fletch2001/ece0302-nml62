@@ -94,3 +94,37 @@ TEST_CASE( "removing_first_last_nodes","[getLength],[insert],[getEntry],[remove]
         }
     }
 }
+
+TEST_CASE( "removing_from_middle", "[getLength],[insert],[getEntry],[remove]") {
+    LinkedList<int> a;
+
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(a.insert(i,i));
+    }
+
+    REQUIRE(a.getLength() == 30);
+    REQUIRE(a.getEntry(1) == 1);
+    REQUIRE(a.getEntry(30) == 30);
+
+    REQUIRE(a.remove(15));
+
+    REQUIRE(a.getLength() == 29);
+
+    for(unsigned i = 0; i < 30; i++) {
+        REQUIRE(a.getEntry(i) == i + int(i/15));
+    }
+}
+
+TEST_CASE( "clearing_list","[getLength],[insert],[clear]" ) {
+    LinkedList<int> a;
+
+    for(unsigned i = 1; i < 61; i++) {
+        REQUIRE(a.insert(i,i));
+    }
+
+    REQUIRE(a.getLength() == 60);
+
+    a.clear();
+
+    REQUIRE(a.getLength() == 0);
+}

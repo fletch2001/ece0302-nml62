@@ -115,15 +115,51 @@ bool LinkedList<T>::remove(std::size_t position)
     return true;
 
   }
-  if(position > 1 && position <= size)
-  Node<T> * nextNode = nullptr; // pointer to node to re-link (node after node to be removed)
-  return true;
+  if(position > 1 && position <= size) {
+    --size;
+
+    Node<T> * nextNode = head; // pointer to node to re-link (node after node to be removed)
+
+    for(unsigned i = 0; i < position - 2; i++ ) { // traverse to two nodes before node to be removed to obtain pointer to node to be removed
+      nextNode = nextNode->getNext();
+    }
+
+    Node<T> * delNode = nextNode->getNext(); // node to delete
+
+    nextNode->setNext((delNode->getNext())); // link node before delete node to node after
+
+    delete delNode; // delete node to be removed
+
+    // set pointers to nullptr
+    delNode = nullptr; 
+    nextNode = nullptr;
+    
+
+    return true; // return true
+  }
+
+  return false; // return false for all invalid cases
 }
 
 template <typename T>
 void LinkedList<T>::clear()
 {
-  //TODO
+    Node<T> * nextNode = head;
+    Node<T> * delNode = head; // pointer to current node and next node
+    while(size > 0) { // loop until at node before tail
+      delNode = nextNode;
+      nextNode = delNode->getNext(); // get pointer to next node
+      delete delNode; // delete current node
+      size--; // decrease size
+    }
+    //delete tail; // delete tail node
+
+    // assign all pointers to nullptr
+    tail = nullptr;
+    delNode = nullptr;
+    nextNode = nullptr;
+    head = nullptr;
+
 }
 
 template <typename T>
