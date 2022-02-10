@@ -46,7 +46,9 @@ public:
   void setEntry(std::size_t position, const T& newValue);
 
 private:
-
+  unsigned size; // size of LL
+  Node<T>* head; // pointer to head node
+  Node<T>* tail; // pointer to tail node
   //TODO
   
 };
