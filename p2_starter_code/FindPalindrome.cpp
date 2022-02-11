@@ -205,43 +205,84 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 	// initialize empty strings
 	string leftStr = "";
 	string rightStr = "";
+
+	const unsigned ascii_a = 97; // ascii A-- for indexing charcount vectors
+	vector<unsigned int> left_charCount(26), right_charCount(26); //vectors of left and right character counts
 	
-	//determine min size
-	if(stringVector1.size() > stringVector2.size()) {
+	// fill l and r vectors with 0s
+	std::fill(left_charCount.begin(), left_charCount.end(), 0);
+	std::fill(right_charCount.begin(), right_charCount.end(), 0);
 
-		// copy right vec number of strings from left and right vec
-		/** purpose is to make a string of each vector that has no spaces for comparison */
-		for(unsigned i = 0; i < stringVector2.size(); i++) {
-			leftStr += stringVector1[i];
-			rightStr += stringVector2[i];
+	// fill left string
+	for(unsigned i = 0; i < stringVector1.size(); i++) {
+		leftStr += stringVector1[i];
+	}
+
+	// fill right string
+	for(unsigned i = 0; i < stringVector2.size(); i++) {
+		rightStr += stringVector2[i];
+	}
+
+	if(rightStr.length() > leftStr.length()) {
+		for(unsigned i = 0; i < leftStr.length(); i++)
+		{
+			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
+			right_charCount[tolower(rightStr[i]) - ascii_a]++; // increase count of character in right
 		}
+
+		for(unsigned i = 0; i < 26; i++) {
+			if(left_charCount[i] > right_charCount[i]) return false; // case when there are omre of a character in left than right
+		}
+	} else {
+		for(unsigned i = 0; i < rightStr.length(); i++)
+		{
+			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
+			right_charCount[tolower(rightStr[i]) - ascii_a]++; // increase count of character in right
+		}
+
+		for(unsigned i = 0; i < 26; i++) {
+			if(left_charCount[i] < right_charCount[i]) return false; // case when there are omre of a character in left than right
+		}
+	}
+
+
+	// //determine min size
+	// if(stringVector1.size() > stringVector2.size()) {
+
+
+	// 	// copy right vec number of strings from left and right vec
+	// 	/** purpose is to make a string of each vector that has no spaces for comparison */
+	// 	for(unsigned i = 0; i < stringVector2.size(); i++) {
+	// 		leftStr += stringVector1[i];
+	// 		rightStr += stringVector2[i];
+	// 	}
 		
-	} else {
+	// } else {
 
-		// copy right vec number of strings from left and right vec
-		/** purpose is to make a string of each vector that has no spaces for comparison */
-		for(unsigned i = 0; i < stringVector1.size(); i++) {
-			leftStr += stringVector1[i];
-			rightStr += stringVector2[i];
-		}
-	}
+	// 	// copy right vec number of strings from left and right vec
+	// 	/** purpose is to make a string of each vector that has no spaces for comparison */
+	// 	for(unsigned i = 0; i < stringVector1.size(); i++) {
+	// 		leftStr += stringVector1[i];
+	// 		rightStr += stringVector2[i];
+	// 	}
+	// }
 
-	//if left string is longer than right, iterate through strings up to right size
-	if(leftStr.length() > rightStr.length()) {
+	// //if left string is longer than right, iterate through strings up to right size
+	// if(leftStr.length() > rightStr.length()) {
 
-		//iterate by right string length starting from rightmost character in right and leftmost in left
-		for(unsigned j = rightStr.length() - 1; j > 0; j--) {
-			if(tolower(leftStr[rightStr.length() - j - 1]) != tolower(rightStr[j])) return false;
-		}
+	// 	//iterate by right string length starting from rightmost character in right and leftmost in left
+	// 	for(unsigned j = rightStr.length() - 1; j > 0; j--) {
+	// 		if(tolower(leftStr[rightStr.length() - j - 1]) != tolower(rightStr[j])) return false;
+	// 	}
 
-	} else {
+	// } else {
 
-		//iterate by right string length starting from rightmost character in right and leftmost in left
-		for(unsigned j = 0; j < leftStr.length(); j++) {
-			if(tolower(leftStr[j]) != tolower(rightStr[rightStr.length() - 1 - j])) return false;
-		}
+	// 	//iterate by right string length starting from rightmost character in right and leftmost in left
+	// 	for(unsigned j = 0; j < leftStr.length(); j++) {
+	// 		if(tolower(leftStr[j]) != tolower(rightStr[rightStr.length() - 1 - j])) return false;
+	// 	}
 
-	}
+	// }
 	
 	// function returns true because function will return false if strings do not pass cut test 2
 	return true;
