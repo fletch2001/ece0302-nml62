@@ -16,19 +16,57 @@ LinkedList<T>::~LinkedList()
 template <typename T>
 LinkedList<T>::LinkedList(const LinkedList<T>& x)
 {
-  //TODO
+  this->size = x.size; // copy size
+
+  this->head = new Node<T>; //set head with new node and copy item from x head
+  head->setItem(x.head->getItem()); // set head item
+
+  Node<T> * next = this->head; // set next node to head
+  Node<T> * x_next = x.head; // get x head pointer
+
+  for(unsigned i = 0; i < size - 1; i++) { 
+    next->setNext(new Node<T>); // make a new node
+    
+    x_next = x_next->getNext(); // get next node in x
+    next = next->getNext(); // get pointer to newly created node
+    next->setItem(x_next->getItem()); // set item at new node to item in x
+  }
 }
 
 template <typename T>
 void LinkedList<T>::swap(LinkedList<T>& x, LinkedList<T>& y)
 {
-  //TODO
+  Node<T> * yHead = y.head; // get y head
+  Node<T> * yTail = y.tail; // get y tail
+  unsigned ySize = y.size; // get y size
+
+  y.head = x.head; // set y head to x
+  y.tail = x.tail; // set y tail to x
+  y.size = x.size; // set y size to x
+
+  x.head = yHead; // set x head to y
+  x.tail = yHead; // set x head to y
+  x.size = ySize; // set x size to y
 }
 
 template <typename T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& x)
 {
-  //TODO
+  this->size = x.size; // copy size
+
+  this->head = new Node<T>; //set head with new node and copy item from x head
+  head->setItem(x.head->getItem()); // set head item
+
+  Node<T> * next = this->head; // set next node to head
+  Node<T> * x_next = x.head; // get x head pointer
+
+  for(unsigned i = 0; i < size - 1; i++) { 
+    next->setNext(new Node<T>); // make a new node
+    
+    x_next = x_next->getNext(); // get next node in x
+    next = next->getNext(); // get pointer to newly created node
+    next->setItem(x_next->getItem()); // set item at new node to item in x
+  }
   return *this;
 }
 
@@ -186,18 +224,3 @@ void LinkedList<T>::setEntry(std::size_t position, const T& newValue)
     next->setItem(newValue); // set new value
   }
 }
-
-/*
-
-position = 3
-
-call 0
-next = head (node 0)
-
-call 1
-next = node 1
-
-call 2
-next = node 2
-
-*/

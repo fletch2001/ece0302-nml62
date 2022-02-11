@@ -143,3 +143,71 @@ TEST_CASE( "setting_item","[getLength],[insert],[setEntry]") {
     //REQUIRE(a.getEntry(30) == 5);
     REQUIRE(a.getEntry(30) == 5);
 }
+
+TEST_CASE( "test_swap","[getLentgh],[insert],[setEntry],[swap]") {
+    LinkedList<int> a, b;
+
+    for(unsigned i = 1; i < 61; i++) {
+        REQUIRE(a.insert(i, 60-i));
+    }
+
+    REQUIRE(a.getLength() == 60);
+    REQUIRE(a.getEntry(29) == 31);
+
+    for(unsigned i = 1; i < 121; i++) {
+        REQUIRE(b.insert(i, i));
+    }
+
+    REQUIRE(b.getLength() == 120);
+    REQUIRE(b.getEntry(29) == 29);
+
+    b.swap(a, b);
+
+    REQUIRE(a.getLength() == 120);
+    REQUIRE(b.getLength() == 60);
+
+    REQUIRE(a.getEntry(29) == 29);
+    REQUIRE(b.getEntry(29) == 31);
+
+    REQUIRE(a.getEntry(100) == 100);
+
+    a.swap(b, a);
+
+    REQUIRE(a.getLength() == 60);
+    REQUIRE(a.getEntry(29) == 31);
+
+    REQUIRE(b.getLength() == 120);
+    REQUIRE(b.getEntry(29) == 29);
+}
+
+TEST_CASE( "test_equals_overload" ) {
+    LinkedList<int> a, b;
+
+    for(unsigned i = 1; i < 151; i++) {
+        REQUIRE(a.insert(i, i));
+    }
+
+    b = a;
+
+    REQUIRE(b.getLength() == a.getLength());
+
+    for(unsigned i = 0; i < 150; i++) {
+        REQUIRE(a.getEntry(i) == b.getEntry(i));
+    }
+}
+
+TEST_CASE( "test_copy_constructor" ) {
+    LinkedList<int> a;
+
+    for(unsigned i = 1; i < 151; i++) {
+        REQUIRE(a.insert(i, i));
+    }
+
+    LinkedList<int>b(a);
+
+    REQUIRE(b.getLength() == a.getLength());
+
+    for(unsigned i = 0; i < 150; i++) {
+        REQUIRE(a.getEntry(i) == b.getEntry(i));
+    }
+}
