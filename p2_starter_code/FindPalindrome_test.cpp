@@ -1,7 +1,11 @@
+#include <iostream>
+#include <fstream>
+
 #define CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_COLOUR_NONE
 #include "catch.hpp"
 #include "FindPalindrome.hpp"
+
 
 // There should be at least one test per FindPalindrome method
 
@@ -15,9 +19,74 @@
 // #include <vector>
 using std::vector;
 using std::string;
+//using std::iostream;
+using std::ifstream;
+
+
 
 //KEY: 0 1 1 1 1 1 1 0
 const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalindrome"}, {"Racecar"}, {"AAAA"}, {"IsawasI"}, {"aaAAAAAa"}, {"AAAAA"}, {"bBAaaAa"}, {"BbAaaA"}, {"bBbAAa"}};
+
+// string temp;
+// std::getline(tFile, temp);
+// std::cout << temp << std::endl;
+// tFile.close();
+
+TEST_CASE("test_file"){
+	ifstream infile("sentence-palindromes.txt");
+
+	vector<vector<string>> palindromeStrings2;
+	
+		unsigned trueTests = 0;
+		string buf;
+
+		std::getline(infile, buf);
+
+		vector<string> row;
+
+		while(infile) {
+			if(buf[0] == '*' && buf[1] == '*'); // comment; skip to next line
+			else {
+				string tmp;
+				for(char c : buf) if(c >= 65 && c <= 90 || c >= 97 && c <= 122)
+					tmp += c;
+				else if((c == 32 || c == 12) && tmp.length()) 
+				{
+					row.push_back(tmp); // space or linefeed
+					tmp.clear();
+				}
+				if(tmp.length()) row.push_back(tmp);
+				trueTests++;
+				
+				palindromeStrings2.push_back(row);
+				row.clear();
+				
+			}
+
+
+			getline(infile, buf);
+		}
+
+		//std::cout << trueTests << std::endl;
+
+		infile.close();
+		FindPalindrome a;
+		unsigned palindromes = 0;
+
+		for(unsigned i = 0; i < 5; i++) {
+			// std::cout << i << " ";
+			// for(string s : palindromeStrings2[i]) std:: cout << s << " ";
+			// std::cout << "    " << a.add(palindromeStrings2[i]);
+			// std::cout << std::endl;
+			INFO("i = " << i);
+			REQUIRE(a.add(palindromeStrings2[i]));
+			REQUIRE(a.number());
+			palindromes += a.number();
+			a.clear();
+		}
+
+		CHECK(palindromes >= trueTests);
+}
 
 TEST_CASE( "cutTest1" , "[cut-tests]" ) {
 	FindPalindrome a;
@@ -122,4 +191,5 @@ TEST_CASE( "add only with palindromes" ){
 	vector<string> s = {"a","AA","AaA"};
 	REQUIRE(a.add(s));
 	REQUIRE(a.number() == 6);
+	REQUIRE( a.add(vector<string>{"I","was","awI"}));
 }

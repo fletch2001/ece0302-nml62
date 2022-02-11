@@ -47,20 +47,27 @@ void FindPalindrome::recursiveFindPalindromes(vector<string>
 	// base case: currentStringVector size == 0
 	if(currentStringVector.size() == 0) {
 		
+		// if candidateStringVector passes cutTest2, it is a palindrome
+		if(cutTest2(vector<string>(candidateStringVector.begin(), candidateStringVector.begin() + (candidateStringVector.size() / 2)), vector<string>(candidateStringVector.begin() + candidateStringVector.size(), candidateStringVector.end()))) {
+			palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
+			num_palindromes++; // increase number of palindromes
+		}
+
+
 		// checking for palindrome
 
 		string test_string; // string to concatenate vector into
 		
 		// add each element of candidateStringVector to test string
-		for(unsigned i = 0; i < candidateStringVector.size(); i++) {
-			test_string += candidateStringVector[i];
-		}
+		// for(unsigned i = 0; i < candidateStringVector.size(); i++) {
+		// 	test_string += candidateStringVector[i];
+		// }
 
-		// test if string is a palindrome
-		if( isPalindrome( test_string ) ) {
-			palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
-			num_palindromes++; // increase number of palindromes
-		}
+		// // test if string is a palindrome
+		// if( isPalindrome( test_string ) ) {
+		// 	palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
+		// 	num_palindromes++; // increase number of palindromes
+		// }
 		return;
 	} else {
 
@@ -195,7 +202,7 @@ bool FindPalindrome::cutTest1(const vector<string> & stringVector)
 bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
                               const vector<string> & stringVector2)
 {
-	//initialize empty strings
+	// initialize empty strings
 	string leftStr = "";
 	string rightStr = "";
 	
@@ -283,7 +290,7 @@ bool FindPalindrome::add(const vector<string> & stringVector)
 	vector<string> emptyVec;
 
 	// call recursiveFindPalindrome
-	recursiveFindPalindromes(emptyVec, current_strings);
+	if(cutTest1(current_strings)) recursiveFindPalindromes(emptyVec, current_strings);
 
 
 	return true;
