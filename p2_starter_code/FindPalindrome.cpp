@@ -56,7 +56,7 @@ void FindPalindrome::recursiveFindPalindromes(vector<string>
 
 		// checking for palindrome
 
-		string test_string; // string to concatenate vector into
+		// string test_string; // string to concatenate vector into
 		
 		// add each element of candidateStringVector to test string
 		// for(unsigned i = 0; i < candidateStringVector.size(); i++) {
@@ -78,8 +78,9 @@ void FindPalindrome::recursiveFindPalindromes(vector<string>
 			candidateStringVector.push_back( currentStringVector[i] );
 			currentStringVector.erase( currentStringVector.begin() + i );
 
-			// call findPalindromes on current combination
-			recursiveFindPalindromes( candidateStringVector, currentStringVector );
+
+			// call findPalindromes on current combination if candidate string vector and currentstringvector pass cuttest2
+			if(cutTest2(candidateStringVector, currentStringVector)) recursiveFindPalindromes( candidateStringVector, currentStringVector );
 			
 			// reassemble vector with new permutation
 			currentStringVector.insert( currentStringVector.begin(), candidateStringVector.back()); // insert last element of candidateString to first position of currentString
@@ -203,11 +204,13 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
                               const vector<string> & stringVector2)
 {
 	// initialize empty strings
-	string leftStr = "";
-	string rightStr = "";
+	string leftStr;
+	string rightStr;
 
 	const unsigned ascii_a = 97; // ascii A-- for indexing charcount vectors
 	vector<unsigned int> left_charCount(26), right_charCount(26); //vectors of left and right character counts
+
+	unsigned unique_chars = 0; // amount of unique characters between both strings
 	
 	// fill l and r vectors with 0s
 	std::fill(left_charCount.begin(), left_charCount.end(), 0);
@@ -226,8 +229,10 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 	if(rightStr.length() > leftStr.length()) {
 		for(unsigned i = 0; i < leftStr.length(); i++)
 		{
+			//if(left_charCount[tolower(leftStr[i]) - ascii_a] == 0) unique_chars++
+			//if(right_charCount[tolower(rightStr[i]) - ascii_a] == 0) unique_chars++;
 			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
-			right_charCount[tolower(rightStr[i]) - ascii_a]++; // increase count of character in right
+			right_charCount[tolower(rightStr[rightStr.length() - 1 - i]) - ascii_a]++; // increase count of character in right
 		}
 
 		for(unsigned i = 0; i < 26; i++) {
@@ -236,53 +241,17 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 	} else {
 		for(unsigned i = 0; i < rightStr.length(); i++)
 		{
-			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
+			if(left_charCount[i] == 0 && right_charCount[i] == 0) unique_chars++; // incremement number of unique characters if first occurence of a char
+			left_charCount[tolower(leftStr[leftStr.length() - 1 - i]) - ascii_a]++; // increase count of character in left
 			right_charCount[tolower(rightStr[i]) - ascii_a]++; // increase count of character in right
 		}
 
-		for(unsigned i = 0; i < 26; i++) {
+		for(unsigned i = 0, cmp = 0; i < 26; i++) {
+			//if(left_charCount[i] || right_charCount[i]) cmp++; // increase cmp if character occurrs at index of either vector (this is to reduce search time)
 			if(left_charCount[i] < right_charCount[i]) return false; // case when there are omre of a character in left than right
+			//if(cmp == unique_chars) break; // if all characters that exist in the two strings have been checked, break and return true
 		}
 	}
-
-
-	// //determine min size
-	// if(stringVector1.size() > stringVector2.size()) {
-
-
-	// 	// copy right vec number of strings from left and right vec
-	// 	/** purpose is to make a string of each vector that has no spaces for comparison */
-	// 	for(unsigned i = 0; i < stringVector2.size(); i++) {
-	// 		leftStr += stringVector1[i];
-	// 		rightStr += stringVector2[i];
-	// 	}
-		
-	// } else {
-
-	// 	// copy right vec number of strings from left and right vec
-	// 	/** purpose is to make a string of each vector that has no spaces for comparison */
-	// 	for(unsigned i = 0; i < stringVector1.size(); i++) {
-	// 		leftStr += stringVector1[i];
-	// 		rightStr += stringVector2[i];
-	// 	}
-	// }
-
-	// //if left string is longer than right, iterate through strings up to right size
-	// if(leftStr.length() > rightStr.length()) {
-
-	// 	//iterate by right string length starting from rightmost character in right and leftmost in left
-	// 	for(unsigned j = rightStr.length() - 1; j > 0; j--) {
-	// 		if(tolower(leftStr[rightStr.length() - j - 1]) != tolower(rightStr[j])) return false;
-	// 	}
-
-	// } else {
-
-	// 	//iterate by right string length starting from rightmost character in right and leftmost in left
-	// 	for(unsigned j = 0; j < leftStr.length(); j++) {
-	// 		if(tolower(leftStr[j]) != tolower(rightStr[rightStr.length() - 1 - j])) return false;
-	// 	}
-
-	// }
 	
 	// function returns true because function will return false if strings do not pass cut test 2
 	return true;
@@ -305,8 +274,8 @@ bool FindPalindrome::add(const string & value)
 	current_strings.push_back(value);
 	vector<string> emptyVec;
 
-	// call recursiveFindPalindrome
-	recursiveFindPalindromes(emptyVec, current_strings);
+	// call recursiveFindPalindrome if passes cutTest1
+	if(cutTest1(current_strings)) recursiveFindPalindromes(emptyVec, current_strings);
 
 	return true;
 }
@@ -330,7 +299,7 @@ bool FindPalindrome::add(const vector<string> & stringVector)
 	current_strings = stringVector;
 	vector<string> emptyVec;
 
-	// call recursiveFindPalindrome
+	// call recursiveFindPalindrome if passes cutTest1
 	if(cutTest1(current_strings)) recursiveFindPalindromes(emptyVec, current_strings);
 
 

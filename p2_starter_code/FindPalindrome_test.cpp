@@ -32,6 +32,19 @@ const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalin
 // std::cout << temp << std::endl;
 // tFile.close();
 
+TEST_CASE("a_test") {
+	FindPalindrome a;
+	REQUIRE(a.add("a"));
+	REQUIRE(a.number() == 0);
+	REQUIRE(!a.add("A"));
+
+	REQUIRE(a.add("aa"));
+	REQUIRE(a.number() == 2);
+
+	REQUIRE(a.add("aaa"));
+	REQUIRE(a.number() == 6);
+}
+
 TEST_CASE("test_file"){
 	ifstream infile("sentence-palindromes.txt");
 
@@ -80,7 +93,7 @@ TEST_CASE("test_file"){
 			// std::cout << std::endl;
 			INFO("i = " << i);
 			REQUIRE(a.add(palindromeStrings2[i]));
-			REQUIRE(a.number());
+			INFO(a.number());
 			palindromes += a.number();
 			a.clear();
 		}
@@ -126,8 +139,8 @@ TEST_CASE( "cutTest2" ) {
 		SECTION( "left is longer than right" ) {
 		//pass
 		//vector<std::string> l1 = {"Race"};
-		vector<std::string> l1 = {"aaa","cbb","ccc"};
-		vector<std::string> r1 = {"aaaa","bb","cc"};
+		vector<std::string> l1 = {"Ra","ce"};
+		vector<std::string> r1 = {"car"};
 		//vector<std::string> r1 = {"car"};
 		//fail
 		// vector<std::string> l2 = {"aa","bb"};
@@ -140,12 +153,15 @@ TEST_CASE( "cutTest2" ) {
 	//right is longer than left
 		SECTION( "right is longer than") {
 			//pass
-			vector<std::string> l1 = {"Rac"};
-			vector<std::string> r1 = {"e","car"};
+		//	vector<std::string> l1 = {"Rac"};
+			vector<std::string> l1 = {"Race"};
+		//	vector<std::string> r1 = {"e","car"};
+			vector<std::string> r1 = {"C","AR"};
 
 			vector<std::string> l2 = {"aab"};
 			vector<std::string> r2 = {"bbb","bcca"};
 
+			//INFO(l1.toString());
 			REQUIRE(a.cutTest2(l1, r1));
 			REQUIRE(a.cutTest2(l2, r2) == 0);
 		}	
@@ -158,11 +174,13 @@ TEST_CASE( "cutTest2" ) {
 	vector<string> stringL2 = {"I","was","and"};
 	vector<string> stringR2 = {"ndasawI"};
 
+	vector<string> stringR3 = {"noah"};
 	vector<string> stringL3 = {"I","not"};
 
 
 	REQUIRE(a.cutTest2(stringL1, stringR1));
 	REQUIRE(a.cutTest2(stringL2, stringR2));
+	REQUIRE(!a.cutTest2(stringL3, stringR3));
 
 }
 
