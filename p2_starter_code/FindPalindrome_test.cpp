@@ -2,7 +2,7 @@
 #include <fstream>
 
 #define CATCH_CONFIG_MAIN
-#define CATCH_CONFIG_COLOUR_NONE
+//#define CATCH_CONFIG_COLOUR_NONE
 #include "catch.hpp"
 #include "FindPalindrome.hpp"
 
@@ -32,17 +32,26 @@ const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalin
 // std::cout << temp << std::endl;
 // tFile.close();
 
-TEST_CASE("a_test") {
+// TEST_CASE("a_test") {
+// 	FindPalindrome a;
+// 	REQUIRE(a.add("a"));
+// 	REQUIRE(a.number() == 0);
+// 	REQUIRE(!a.add("A"));
+
+// 	REQUIRE(a.add("aa"));
+// 	REQUIRE(a.number() == 2);
+
+// 	REQUIRE(a.add("aaa"));
+// 	REQUIRE(a.number() == 8); // 3! + 2
+
+// 	REQUIRE(a.add("AAAA"));
+// 	REQUIRE(a.number() == 32);
+// }
+
+TEST_CASE("first_file_p") {
 	FindPalindrome a;
-	REQUIRE(a.add("a"));
-	REQUIRE(a.number() == 0);
-	REQUIRE(!a.add("A"));
-
-	REQUIRE(a.add("aa"));
-	REQUIRE(a.number() == 2);
-
-	REQUIRE(a.add("aaa"));
-	REQUIRE(a.number() == 6);
+	REQUIRE(a.add(vector<string>{"Sore","was","saw","Eros"}));
+	REQUIRE(a.number() == 1);
 }
 
 TEST_CASE("test_file"){
@@ -91,14 +100,15 @@ TEST_CASE("test_file"){
 			// for(string s : palindromeStrings2[i]) std:: cout << s << " ";
 			// std::cout << "    " << a.add(palindromeStrings2[i]);
 			// std::cout << std::endl;
-			INFO("i = " << i);
+			//INFO();
 			REQUIRE(a.add(palindromeStrings2[i]));
-			INFO(a.number());
+			INFO("i = " << i << a.number());
 			palindromes += a.number();
+			CHECK(a.number() == 1);
 			a.clear();
 		}
 
-		CHECK(palindromes >= trueTests);
+		CHECK(palindromes >= 4);
 }
 
 TEST_CASE( "cutTest1" , "[cut-tests]" ) {
