@@ -128,3 +128,18 @@ TEST_CASE( "clearing_list","[getLength],[insert],[clear]" ) {
 
     REQUIRE(a.getLength() == 0);
 }
+
+TEST_CASE( "setting_item","[getLength],[insert],[setEntry]") {
+    LinkedList<int> a;
+
+    for(unsigned i = 1; i < 61; i++) {
+        REQUIRE(a.insert(i,i));
+    }
+
+    REQUIRE(a.getLength() == 60);
+
+    a.setEntry(30, 5);
+
+    //REQUIRE(a.getEntry(30) == 5);
+    REQUIRE(a.getEntry(30) == 5);
+}

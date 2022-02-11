@@ -10,7 +10,7 @@ LinkedList<T>::LinkedList()
 template <typename T>
 LinkedList<T>::~LinkedList()
 {
-  //TODO
+  clear(); // call clear to deallocate memory
 }
 
 template <typename T>
@@ -178,7 +178,13 @@ T LinkedList<T>::getEntry(std::size_t position) const
 template <typename T>
 void LinkedList<T>::setEntry(std::size_t position, const T& newValue)
 {
-  //TODO
+  if(position <= size && position > 0) {
+    Node<T> * next = head; // set next node pointer to head
+    for(unsigned i = 0; i < position - 1; i++) {
+      next = next->getNext(); // get pointer to next node
+    }
+    next->setItem(newValue); // set new value
+  }
 }
 
 /*
