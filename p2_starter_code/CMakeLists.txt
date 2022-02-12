@@ -17,6 +17,10 @@ enable_testing()
 # unit tests
 add_test(unittest FindPalindrome-tests)
 
+# include test sample text file
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sentence-palindromes.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 add_custom_target(submission COMMAND
     ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_BINARY_DIR}/p2_palindrome.zip" --format=zip
        ${SOURCE}

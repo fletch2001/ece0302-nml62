@@ -50,65 +50,71 @@ const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalin
 
 TEST_CASE("first_file_p") {
 	FindPalindrome a;
-	REQUIRE(a.add(vector<string>{"Sore","was","I","ere","I","saw","Eros"}));
+	REQUIRE(a.add("car"));
+	REQUIRE(a.add("RACE"));
 	REQUIRE(a.number() == 1);
 }
 
+
+ifstream infile("sentence-palindromes.txt");
+
 TEST_CASE("test_file"){
-	ifstream infile("sentence-palindromes.txt");
+	if(infile) {
 
-	vector<vector<string>> palindromeStrings2;
-	
-		unsigned trueTests = 0;
-		string buf;
 
-		std::getline(infile, buf);
+		vector<vector<string>> palindromeStrings2;
+		
+			unsigned trueTests = 0;
+			string buf;
 
-		vector<string> row;
+			std::getline(infile, buf);
 
-		while(infile) {
-			if(buf[0] == '*' && buf[1] == '*'); // comment; skip to next line
-			else {
-				string tmp;
-				for(char c : buf) if(c >= 65 && c <= 90 || c >= 97 && c <= 122)
-					tmp += c;
-				else if((c == 32 || c == 12) && tmp.length()) 
-				{
-					row.push_back(tmp); // space or linefeed
-					tmp.clear();
+			vector<string> row;
+
+			while(infile) {
+				if(buf[0] == '*' && buf[1] == '*'); // comment; skip to next line
+				else {
+					string tmp;
+					for(char c : buf) if(c >= 65 && c <= 90 || c >= 97 && c <= 122)
+						tmp += c;
+					else if((c == 32 || c == 12) && tmp.length()) 
+					{
+						row.push_back(tmp); // space or linefeed
+						tmp.clear();
+					}
+					if(tmp.length()) row.push_back(tmp);
+					trueTests++;
+					
+					palindromeStrings2.push_back(row);
+					row.clear();
+					
 				}
-				if(tmp.length()) row.push_back(tmp);
-				trueTests++;
-				
-				palindromeStrings2.push_back(row);
-				row.clear();
-				
+
+
+				getline(infile, buf);
 			}
 
+			//std::cout << trueTests << std::endl;
 
-			getline(infile, buf);
-		}
+			infile.close();
+			FindPalindrome a;
+			unsigned palindromes = 0;
 
-		//std::cout << trueTests << std::endl;
+			for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
+				// std::cout << i << " ";
+				// for(string s : palindromeStrings2[i]) std:: cout << s << " ";
+				// std::cout << "    " << a.add(palindromeStrings2[i]);
+				// std::cout << std::endl;
+				//INFO();
+				REQUIRE(a.add(palindromeStrings2[i]));
+				INFO("i = " << i << a.number());
+				palindromes += a.number();
+				CHECK(a.number() >= 1);
+				a.clear();
+			}
 
-		infile.close();
-		FindPalindrome a;
-		unsigned palindromes = 0;
-
-		for(unsigned i = 0; i < 5; i++) {
-			// std::cout << i << " ";
-			// for(string s : palindromeStrings2[i]) std:: cout << s << " ";
-			// std::cout << "    " << a.add(palindromeStrings2[i]);
-			// std::cout << std::endl;
-			//INFO();
-			REQUIRE(a.add(palindromeStrings2[i]));
-			INFO("i = " << i << a.number());
-			palindromes += a.number();
-			CHECK(a.number() == 1);
-			a.clear();
-		}
-
-		CHECK(palindromes >= 4);
+			CHECK(palindromes >= 345);
+	}
 }
 
 TEST_CASE( "cutTest1" , "[cut-tests]" ) {
@@ -206,6 +212,8 @@ TEST_CASE( "test add" ) {
 	REQUIRE(!a.add("testing!"));
 	REQUIRE(!a.add("TESTING"));
 	REQUIRE(!a.add("two words"));
+
+	REQUIRE(a.number() == 2);
 }
 
 TEST_CASE( "test add overload" ) {
