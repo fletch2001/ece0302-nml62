@@ -31,6 +31,9 @@ LinkedList<T>::LinkedList(const LinkedList<T>& x)
     next = next->getNext(); // get pointer to newly created node
     next->setItem(x_next->getItem()); // set item at new node to item in x
   }
+
+  next = nullptr;
+  x_next = nullptr;
 }
 
 template <typename T>
@@ -47,6 +50,10 @@ void LinkedList<T>::swap(LinkedList<T>& x, LinkedList<T>& y)
   x.head = yHead; // set x head to y
   x.tail = yHead; // set x head to y
   x.size = ySize; // set x size to y
+
+  // set container pointers to null
+  yHead = nullptr;
+  yTail = nullptr;
 }
 
 template <typename T>
@@ -67,6 +74,10 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& x)
     next = next->getNext(); // get pointer to newly created node
     next->setItem(x_next->getItem()); // set item at new node to item in x
   }
+
+  next = nullptr;
+  x_next = nullptr;
+
   return *this;
 }
 
