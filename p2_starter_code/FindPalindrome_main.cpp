@@ -8,8 +8,8 @@ int main()
 {
 	FindPalindrome f;
 	string newString("a");
-	// vector<string> test = {"Sore","was","I","ere","I","saw","Eros"};
-	vector<string> test = {"AA","AAA","AAAA"};
+	vector<string> test = {"Never","a","foot","too","far","even"};
+	//vector<string> test = {"AA","AAA","AAAA"};
 	cout << "\n******* Project 1 Main *********\n\n";
 	for (int i=0; i<3; i++) {
 		if(f.add(test)) {

@@ -49,26 +49,26 @@ void FindPalindrome::recursiveFindPalindromes(vector<string>
 		
 		// if candidateStringVector passes cutTest2, it is a palindrome
 		//if(cutTest2(vector<string>(candidateStringVector.begin(), candidateStringVector.begin() + (candidateStringVector.size() / 2)), vector<string>(candidateStringVector.begin() + candidateStringVector.size(), candidateStringVector.end()))) {
-		if(cutTest1(candidateStringVector)) {
-			palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
-			num_palindromes++; // increase number of palindromes
-		}
+		// if(cutTest1(candidateStringVector)) {
+		// 	palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
+		// 	num_palindromes++; // increase number of palindromes
+		// }
 
 
 		// checking for palindrome
 
-		// string test_string; // string to concatenate vector into
+		string test_string; // string to concatenate vector into
 		
 		// add each element of candidateStringVector to test string
-		// for(unsigned i = 0; i < candidateStringVector.size(); i++) {
-		// 	test_string += candidateStringVector[i];
-		// }
+		for(unsigned i = 0; i < candidateStringVector.size(); i++) {
+			test_string += candidateStringVector[i];
+		}
 
-		// // test if string is a palindrome
-		// if( isPalindrome( test_string ) ) {
-		// 	palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
-		// 	num_palindromes++; // increase number of palindromes
-		// }
+		// test if string is a palindrome
+		if( isPalindrome( test_string ) ) {
+			palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
+			num_palindromes++; // increase number of palindromes
+		}
 		return;
 	} else {
 
@@ -243,8 +243,8 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 		for(unsigned i = 0; i < rightStr.length(); i++)
 		{
 			if(left_charCount[i] == 0 && right_charCount[i] == 0) unique_chars++; // incremement number of unique characters if first occurence of a char
-			left_charCount[tolower(leftStr[leftStr.length() - 1 - i]) - ascii_a]++; // increase count of character in left
-			right_charCount[tolower(rightStr[i]) - ascii_a]++; // increase count of character in right
+			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
+			right_charCount[tolower(rightStr[rightStr.length() - 1 - i]) - ascii_a]++; // increase count of character in right
 		}
 
 		for(unsigned i = 0, cmp = 0; i < 26; i++) {

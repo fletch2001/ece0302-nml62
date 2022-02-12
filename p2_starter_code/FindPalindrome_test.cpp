@@ -50,7 +50,7 @@ const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalin
 
 TEST_CASE("first_file_p") {
 	FindPalindrome a;
-	REQUIRE(a.add(vector<string>{"Sore","was","saw","Eros"}));
+	REQUIRE(a.add(vector<string>{"Sore","was","I","ere","I","saw","Eros"}));
 	REQUIRE(a.number() == 1);
 }
 
