@@ -25,7 +25,6 @@ TEST_CASE( "test copy constructor" ) {
   for(unsigned i = 1; i < 40; i++) {
     REQUIRE(c.getEntry(i) == l.getEntry(i)); 
   }
-
 }
 
 TEST_CASE("test insert") {

@@ -150,5 +150,5 @@ template <typename T>
 void ArrayList<T>::setEntry(std::size_t position, const T& newValue) {
   if(position >= 1 && position <= size)
     arr[position - 1] = newValue;
-  else if(position == 1) insert(position, newValue);
+  else;
 }
