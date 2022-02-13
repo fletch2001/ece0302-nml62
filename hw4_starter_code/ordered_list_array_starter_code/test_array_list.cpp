@@ -3,121 +3,188 @@
 
 #include "array_list.hpp"
 
-//force class expansion
 template class ArrayList<int>;
 
-TEST_CASE( "test constructor", "[ArrayList]" ) {
-  ArrayList<int> l;
 
-  REQUIRE(l.getLength() == 0);
+
+TEST_CASE( "constructor_getLength_isEmpty", "[getLength],[constructor],[isEmpty]" ) {
+  ArrayList<int> a;
+  REQUIRE(a.getLength() == 0);
+  REQUIRE(a.isEmpty() == 1);
 }
 
-TEST_CASE( "test copy constructor" ) {
-  ArrayList<int> l;
-  REQUIRE(l.getLength() == 0);
-  
-  for(unsigned i = 1; i < 40; i++) {
-    REQUIRE(l.insert(i, i));
-  }
-
-  ArrayList<int> c(l);
-
-  for(unsigned i = 1; i < 40; i++) {
-    REQUIRE(c.getEntry(i) == l.getEntry(i)); 
-  }
+TEST_CASE( "adding_item","[getLength], [insert]") {
+    ArrayList<int> a;
+    REQUIRE(a.insert(1, 1));
+    REQUIRE(a.getLength() == 1);
 }
 
-TEST_CASE("test insert") {
-  ArrayList<int> l;
-  REQUIRE(l.insert(1,5));
-  REQUIRE(!l.insert(3,5));
-  REQUIRE(!l.insert(0,4));
-  REQUIRE(l.insert(2, 4));
+TEST_CASE("adding_item_on_end") {
+    ArrayList<int> a;
+    REQUIRE(a.insert(1,1));
+    REQUIRE(a.insert(2,2));
+    REQUIRE(a.insert(3,3));
+
+    REQUIRE(a.getLength() == 3);
 }
 
-TEST_CASE( "test =") {
-  ArrayList<int> l, c;
-  REQUIRE(l.getLength() == 0);
-  
-  for(unsigned i = 1; i < 40; i++) {
-    REQUIRE(l.insert(i, i));
-  }
-  
-  c = l;
-
-  for(unsigned i = 1; i < 40; i++) {
-    REQUIRE(c.getEntry(i) == l.getEntry(i)); 
-  }
+TEST_CASE( "add_two_items","[getLength],[insert],[getEntry]") {
+    ArrayList<int> a;
+    REQUIRE(a.insert(1, 1));
+    REQUIRE(a.getEntry(1) == 1);
+    REQUIRE(a.getLength() == 1);
+    REQUIRE(a.insert(2, 2));
+    REQUIRE(a.getEntry(2) == 2);
+    REQUIRE(a.getLength() == 2);
 }
 
-TEST_CASE( "test isEmpty" ) { 
-  ArrayList<int> l;
-  REQUIRE(l.isEmpty());
+TEST_CASE("adding_four_items_w_mid_insertion","[getLength],[insert],[getEntry]") {
+    ArrayList<int> a;
+    REQUIRE(a.getLength() == 0);
 
-  REQUIRE(l.insert(1, 5));
-  REQUIRE(!l.isEmpty());
+    REQUIRE(a.insert(1, 1));
+    REQUIRE(a.insert(2, 2));
+
+    REQUIRE(a.getEntry(2) == 2);
+
+    REQUIRE(a.insert(3, 3));
+
+    REQUIRE(a.getLength() == 3);
+    REQUIRE(a.getEntry(3) == 3);
+
+    REQUIRE(a.insert(3, 4));
+    REQUIRE(a.getLength() == 4);
+    REQUIRE(a.getEntry(3) == 4);
+
+    INFO(a.getEntry(3));
+    REQUIRE(a.getEntry(4) == 3);
 }
 
-TEST_CASE( "getLength" ) { 
-  ArrayList<int> l;
-  REQUIRE(l.getLength() == 0);
-  REQUIRE(l.insert(1, 0));
-  REQUIRE(l.getLength() == 1);
+TEST_CASE( "removing_first_last_nodes","[getLength],[insert],[getEntry],[remove]") {
+    ArrayList<int> a;
 
-  for(unsigned i = 2; i < 40; i++) {
-    REQUIRE(l.insert(i,i));
-    REQUIRE(l.getLength() == i);
-  }
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(a.insert(i,i));
+    }
+
+    REQUIRE(a.getLength() == 30);
+    REQUIRE(a.getEntry(1) == 1);
+    REQUIRE(a.getEntry(30) == 30);
+
+    SECTION( "removing tail then head") {
+        REQUIRE(a.remove(30) == 1);
+        REQUIRE(a.getLength() == 29);
+        
+        for(unsigned i = 1; i < 30; i++) {
+            REQUIRE(a.getEntry(i) == i);
+        }
+
+        REQUIRE(a.getEntry(30) == 0);
+
+        REQUIRE(a.remove(1) == 1);
+        REQUIRE(a.getLength() == 28);
+
+        for(unsigned i = 1; i < 29; i++) {
+            REQUIRE(a.getEntry(i) == i+1);
+        }
+    }
+
+    SECTION( "removing head then tail") {
+        REQUIRE(a.remove(1) == 1);
+        REQUIRE(a.getLength() == 29);
+
+        for(unsigned i = 1; i < 30; i++) {
+            REQUIRE(a.getEntry(i) == i+1);
+        }
+
+        REQUIRE(a.remove(29) == 1);
+        REQUIRE(a.getLength() == 28);
+
+        for(unsigned i = 1; i < 29; i++) {
+            REQUIRE(a.getEntry(i) == i+1);
+        }
+    }
 }
 
-TEST_CASE( "test remove" ) { 
-  ArrayList<int> l;
-  REQUIRE(l.insert(1, 1));
-  REQUIRE(l.insert(2, 2));
-  REQUIRE(l.insert(3, 3));
-  REQUIRE(l.getLength() == 3);
+TEST_CASE( "removing_from_middle", "[getLength],[insert],[getEntry],[remove]") {
+    ArrayList<int> a;
 
-  REQUIRE(l.remove(2));
-  REQUIRE(!l.remove(3));
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(a.insert(i,i));
+    }
 
-  REQUIRE(l.getLength() == 2);
-  REQUIRE(l.getEntry(2) == 3);
+    REQUIRE(a.getLength() == 30);
+    REQUIRE(a.getEntry(1) == 1);
+    REQUIRE(a.getEntry(30) == 30);
+
+    REQUIRE(a.remove(15));
+
+    REQUIRE(a.getLength() == 29);
+
+    for(unsigned i = 0; i < 30; i++) {
+        REQUIRE(a.getEntry(i) == i + int(i/15));
+    }
 }
 
-TEST_CASE( "test getEntry" ) { 
-  ArrayList<int> l;
-  for(unsigned i = 1; i < 40; i++) {
-    REQUIRE(l.insert(i,i));
-  }
+TEST_CASE( "clearing_list","[getLength],[insert],[clear]" ) {
+    ArrayList<int> a;
 
-  for(unsigned i = 39; i > 0; i--) {
-    REQUIRE(l.getEntry(i) == i);
-  }
+    for(unsigned i = 1; i < 61; i++) {
+        REQUIRE(a.insert(i,i));
+    }
+
+    REQUIRE(a.getLength() == 60);
+
+    a.clear();
+
+    REQUIRE(a.getLength() == 0);
 }
 
-TEST_CASE( "setEntry" ) { 
-  ArrayList<int> l;
-  for(unsigned i = 1; i < 40; i++)
-    REQUIRE(l.insert(i, i));
-  
-  REQUIRE(l.getLength() == 39);
-  REQUIRE(l.getEntry(34) == 34);
+TEST_CASE( "setting_item","[getLength],[insert],[setEntry]") {
+    ArrayList<int> a;
 
-  l.setEntry(34, 5);
-  REQUIRE(l.getLength() == 39);
+    for(unsigned i = 1; i < 61; i++) {
+        REQUIRE(a.insert(i,i));
+    }
 
-  REQUIRE(l.getEntry(34) == 5);
+    REQUIRE(a.getLength() == 60);
+
+    a.setEntry(30, 5);
+
+    REQUIRE(a.getEntry(30) == 5);
+
+    a.setEntry(62, 5);
+    REQUIRE(a.getLength() == 60);
 }
 
-TEST_CASE( "test clear" ) { 
-  ArrayList<int> l;
+TEST_CASE( "test_equals_overload" ) {
+    ArrayList<int> a, b;
 
-  for(unsigned i = 1; i < 40; i++)
-    REQUIRE(l.insert(i, i));
+    for(unsigned i = 1; i < 151; i++) {
+        REQUIRE(a.insert(i, i));
+    }
 
-  REQUIRE(l.getLength() == 39);
+    b = a;
 
-  l.clear();
+    REQUIRE(b.getLength() == a.getLength());
 
-  REQUIRE(l.getLength() == 0);
+    for(unsigned i = 0; i < 150; i++) {
+        REQUIRE(a.getEntry(i) == b.getEntry(i));
+    }
+}
+
+TEST_CASE( "test_copy_constructor" ) {
+    ArrayList<int> a;
+
+    for(unsigned i = 1; i < 151; i++) {
+        REQUIRE(a.insert(i, i));
+    }
+
+    ArrayList<int>b(a);
+
+    REQUIRE(b.getLength() == a.getLength());
+
+    for(unsigned i = 0; i < 150; i++) {
+        REQUIRE(a.getEntry(i) == b.getEntry(i));
+    }
 }
