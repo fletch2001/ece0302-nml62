@@ -66,7 +66,7 @@ bool ArrayList<T>::insert(std::size_t position, const T& item){
     return true;
 
   } else if(position == size + 1) { // when position is size of array. Extend by one element
-    T * temp = new T[position++]; // allocate new array for temp to be copied to arr later
+    T * temp = new T[position]; // allocate new array for temp to be copied to arr later
 
     for(unsigned i = 0; i < size; i++) {
       temp[i] = arr[i]; // copt items from arr to temp
@@ -77,24 +77,28 @@ bool ArrayList<T>::insert(std::size_t position, const T& item){
     arr = temp; // assign temp to arr
     temp = nullptr; // assign nullptr to temp
 
-    arr[size++] = item; // assign item to last element and increase size
+    arr[size] = item; // assign item to last element and increase size
+
+    size++;
 
     return true;
 
   } else if(position > 0 && position <= size) { // when position > 0 and < size, item must be inserted somewhere in middle of array
     
-    T* temp = new T[++size]; // new temp array
+    T* temp = new T[size + 1]; // new temp array
 
     unsigned offset = 0; // initialize offset to 0
 
     for(unsigned i = 0; i < size; i++) { // copy items from original array to temp until index where item to be inserted is met
       if(i == position - 1) { // increase offset to 1 when index is at position to be inserted
-        temp[i] = item; // insert new item
         offset = 1; 
-      } else {
-        temp[i] = arr[i + offset]; // copy items from otiginal array
       }
+        temp[i + offset] = arr[i]; // copy items from otiginal array
     }
+
+    size++; // increase size
+  
+    temp[position - 1] = item; // insert new item
 
     delete [] arr; // delete original array
 
@@ -103,7 +107,23 @@ bool ArrayList<T>::insert(std::size_t position, const T& item){
     temp = nullptr;
 
     return true;
-  } else { // all other cases return false
+  /*} else if(position == size) {
+
+    T* temp = new T[++size]; // new tmp array of size currentSize + 1
+    temp = arr; // copy arr to tmp
+    
+    delete [] arr; // delete existing array
+
+    temp[size - 1] = item; // set item at last position of temp
+
+    arr = temp; // copy temp back to arr
+
+    temp = nullptr; // set temp to nullptr
+
+    return true; // return true
+
+  }*/ 
+  }else { // all other cases return false
     return false;
   }
 }
@@ -150,5 +170,5 @@ template <typename T>
 void ArrayList<T>::setEntry(std::size_t position, const T& newValue) {
   if(position >= 1 && position <= size)
     arr[position - 1] = newValue;
-  else if(position == 1) insert(position, newValue);
+  else;
 }

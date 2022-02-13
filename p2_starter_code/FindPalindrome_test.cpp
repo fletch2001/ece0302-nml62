@@ -2,7 +2,7 @@
 #include <fstream>
 
 #define CATCH_CONFIG_MAIN
-#define CATCH_CONFIG_COLOUR_NONE
+//#define CATCH_CONFIG_COLOUR_NONE
 #include "catch.hpp"
 #include "FindPalindrome.hpp"
 
@@ -32,60 +32,89 @@ const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalin
 // std::cout << temp << std::endl;
 // tFile.close();
 
+// TEST_CASE("a_test") {
+// 	FindPalindrome a;
+// 	REQUIRE(a.add("a"));
+// 	REQUIRE(a.number() == 0);
+// 	REQUIRE(!a.add("A"));
+
+// 	REQUIRE(a.add("aa"));
+// 	REQUIRE(a.number() == 2);
+
+// 	REQUIRE(a.add("aaa"));
+// 	REQUIRE(a.number() == 8); // 3! + 2
+
+// 	REQUIRE(a.add("AAAA"));
+// 	REQUIRE(a.number() == 32);
+// }
+
+TEST_CASE("first_file_p") {
+	FindPalindrome a;
+	REQUIRE(a.add("car"));
+	REQUIRE(a.add("RACE"));
+	REQUIRE(a.number() == 1);
+}
+
+
+ifstream infile("sentence-palindromes.txt");
+
 TEST_CASE("test_file"){
-	ifstream infile("sentence-palindromes.txt");
+	if(infile) {
 
-	vector<vector<string>> palindromeStrings2;
-	
-		unsigned trueTests = 0;
-		string buf;
 
-		std::getline(infile, buf);
+		vector<vector<string>> palindromeStrings2;
+		
+			unsigned trueTests = 0;
+			string buf;
 
-		vector<string> row;
+			std::getline(infile, buf);
 
-		while(infile) {
-			if(buf[0] == '*' && buf[1] == '*'); // comment; skip to next line
-			else {
-				string tmp;
-				for(char c : buf) if(c >= 65 && c <= 90 || c >= 97 && c <= 122)
-					tmp += c;
-				else if((c == 32 || c == 12) && tmp.length()) 
-				{
-					row.push_back(tmp); // space or linefeed
-					tmp.clear();
+			vector<string> row;
+
+			while(infile) {
+				if(buf[0] == '*' && buf[1] == '*'); // comment; skip to next line
+				else {
+					string tmp;
+					for(char c : buf) if(c >= 65 && c <= 90 || c >= 97 && c <= 122)
+						tmp += c;
+					else if((c == 32 || c == 12) && tmp.length()) 
+					{
+						row.push_back(tmp); // space or linefeed
+						tmp.clear();
+					}
+					if(tmp.length()) row.push_back(tmp);
+					trueTests++;
+					
+					palindromeStrings2.push_back(row);
+					row.clear();
+					
 				}
-				if(tmp.length()) row.push_back(tmp);
-				trueTests++;
-				
-				palindromeStrings2.push_back(row);
-				row.clear();
-				
+
+
+				getline(infile, buf);
 			}
 
+			//std::cout << trueTests << std::endl;
 
-			getline(infile, buf);
-		}
+			infile.close();
+			FindPalindrome a;
+			unsigned palindromes = 0;
 
-		//std::cout << trueTests << std::endl;
+			for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
+				// std::cout << i << " ";
+				// for(string s : palindromeStrings2[i]) std:: cout << s << " ";
+				// std::cout << "    " << a.add(palindromeStrings2[i]);
+				// std::cout << std::endl;
+				//INFO();
+				REQUIRE(a.add(palindromeStrings2[i]));
+				INFO("i = " << i << a.number());
+				palindromes += a.number();
+				CHECK(a.number() >= 1);
+				a.clear();
+			}
 
-		infile.close();
-		FindPalindrome a;
-		unsigned palindromes = 0;
-
-		for(unsigned i = 0; i < 5; i++) {
-			// std::cout << i << " ";
-			// for(string s : palindromeStrings2[i]) std:: cout << s << " ";
-			// std::cout << "    " << a.add(palindromeStrings2[i]);
-			// std::cout << std::endl;
-			INFO("i = " << i);
-			REQUIRE(a.add(palindromeStrings2[i]));
-			REQUIRE(a.number());
-			palindromes += a.number();
-			a.clear();
-		}
-
-		CHECK(palindromes >= trueTests);
+			CHECK(palindromes >= 345);
+	}
 }
 
 TEST_CASE( "cutTest1" , "[cut-tests]" ) {
@@ -125,25 +154,30 @@ TEST_CASE( "cutTest2" ) {
 	//left is longer than right
 		SECTION( "left is longer than right" ) {
 		//pass
+		//vector<std::string> l1 = {"Race"};
 		vector<std::string> l1 = {"Ra","ce"};
 		vector<std::string> r1 = {"car"};
+		//vector<std::string> r1 = {"car"};
 		//fail
-		vector<std::string> l2 = {"aa","bb"};
-		vector<std::string> r2 = {"cca"};
+		// vector<std::string> l2 = {"aa","bb"};
+		// vector<std::string> r2 = {"cca"};
 
 			REQUIRE(a.cutTest2(l1, r1));
-			REQUIRE(a.cutTest2(l2, r2) == 0);
+			//REQUIRE(a.cutTest2(l2, r2) == 0);
 		}
 
 	//right is longer than left
 		SECTION( "right is longer than") {
 			//pass
-			vector<std::string> l1 = {"Rac"};
-			vector<std::string> r1 = {"e","car"};
+		//	vector<std::string> l1 = {"Rac"};
+			vector<std::string> l1 = {"Race"};
+		//	vector<std::string> r1 = {"e","car"};
+			vector<std::string> r1 = {"C","AR"};
 
 			vector<std::string> l2 = {"aab"};
 			vector<std::string> r2 = {"bbb","bcca"};
 
+			//INFO(l1.toString());
 			REQUIRE(a.cutTest2(l1, r1));
 			REQUIRE(a.cutTest2(l2, r2) == 0);
 		}	
@@ -156,11 +190,13 @@ TEST_CASE( "cutTest2" ) {
 	vector<string> stringL2 = {"I","was","and"};
 	vector<string> stringR2 = {"ndasawI"};
 
+	vector<string> stringR3 = {"noah"};
 	vector<string> stringL3 = {"I","not"};
 
 
 	REQUIRE(a.cutTest2(stringL1, stringR1));
 	REQUIRE(a.cutTest2(stringL2, stringR2));
+	REQUIRE(!a.cutTest2(stringL3, stringR3));
 
 }
 
@@ -176,6 +212,8 @@ TEST_CASE( "test add" ) {
 	REQUIRE(!a.add("testing!"));
 	REQUIRE(!a.add("TESTING"));
 	REQUIRE(!a.add("two words"));
+
+	REQUIRE(a.number() == 2);
 }
 
 TEST_CASE( "test add overload" ) {

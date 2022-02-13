@@ -5,12 +5,14 @@
 using namespace std;
 
 int main()
-{/*
+{
 	FindPalindrome f;
 	string newString("a");
+	vector<string> test = {"Never","a","foot","too","far","even"};
+	//vector<string> test = {"AA","AAA","AAAA"};
 	cout << "\n******* Project 1 Main *********\n\n";
 	for (int i=0; i<3; i++) {
-		if(f.add(newString)) {
+		if(f.add(test)) {
 			cout << "Added the string :" << newString << endl;
 		} else {
 			cout << "ERROR: for some reason unable to add the string: << newString " << endl;
@@ -29,7 +31,8 @@ int main()
 	cout << endl;
 	cout << "\n******* Project 1 Main *********\n\n";
 	return 0;
-*/
+
+/*
 	ifstream infile;
 	//infile.open("sentence-palindromes.txt");
 	infile.open("name.txt");
@@ -73,5 +76,6 @@ int main()
 	cout << endl;
 	cout << "\n******* Project 1 Main *********\n\n";
 	return 0;
+	*/
 
 }
