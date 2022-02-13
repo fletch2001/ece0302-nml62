@@ -66,7 +66,7 @@ bool ArrayList<T>::insert(std::size_t position, const T& item){
     return true;
 
   } else if(position == size + 1) { // when position is size of array. Extend by one element
-    T * temp = new T[position++]; // allocate new array for temp to be copied to arr later
+    T * temp = new T[position]; // allocate new array for temp to be copied to arr later
 
     for(unsigned i = 0; i < size; i++) {
       temp[i] = arr[i]; // copt items from arr to temp
@@ -77,7 +77,9 @@ bool ArrayList<T>::insert(std::size_t position, const T& item){
     arr = temp; // assign temp to arr
     temp = nullptr; // assign nullptr to temp
 
-    arr[size++] = item; // assign item to last element and increase size
+    arr[size] = item; // assign item to last element and increase size
+
+    size++;
 
     return true;
 
