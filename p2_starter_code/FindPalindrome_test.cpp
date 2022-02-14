@@ -6,55 +6,17 @@
 #include "catch.hpp"
 #include "FindPalindrome.hpp"
 
-
-// There should be at least one test per FindPalindrome method
-
-// TEST_CASE( "Test FindPalindrome add a non-allowable word", "[FindPalindrome]" )
-// {
-// 	INFO("Hint: add a single non-allowable word");
-// 	FindPalindrome b;
-// 	REQUIRE(!b.add("kayak1"));
-// }
-
-// #include <vector>
 using std::vector;
 using std::string;
-//using std::iostream;
 using std::ifstream;
 
-
+/*******************************************************************************************************/
+/* number() and add(vector<string>) not tested in their own test cases but tested throughout all tests */
+/*******************************************************************************************************/
 
 //KEY: 0 1 1 1 1 1 1 0
+
 const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalindrome"}, {"Racecar"}, {"AAAA"}, {"IsawasI"}, {"aaAAAAAa"}, {"AAAAA"}, {"bBAaaAa"}, {"BbAaaA"}, {"bBbAAa"}};
-
-// string temp;
-// std::getline(tFile, temp);
-// std::cout << temp << std::endl;
-// tFile.close();
-
-// TEST_CASE("a_test") {
-// 	FindPalindrome a;
-// 	REQUIRE(a.add("a"));
-// 	REQUIRE(a.number() == 0);
-// 	REQUIRE(!a.add("A"));
-
-// 	REQUIRE(a.add("aa"));
-// 	REQUIRE(a.number() == 2);
-
-// 	REQUIRE(a.add("aaa"));
-// 	REQUIRE(a.number() == 8); // 3! + 2
-
-// 	REQUIRE(a.add("AAAA"));
-// 	REQUIRE(a.number() == 32);
-// }
-
-TEST_CASE("first_file_p") {
-	FindPalindrome a;
-	REQUIRE(a.add("car"));
-	REQUIRE(a.add("RACE"));
-	REQUIRE(a.number() == 1);
-}
-
 
 ifstream infile("sentence-palindromes.txt");
 
@@ -94,26 +56,18 @@ TEST_CASE("test_file"){
 				getline(infile, buf);
 			}
 
-			//std::cout << trueTests << std::endl;
-
 			infile.close();
 			FindPalindrome a;
 			unsigned palindromes = 0;
 
 			for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
-				// std::cout << i << " ";
-				// for(string s : palindromeStrings2[i]) std:: cout << s << " ";
-				// std::cout << "    " << a.add(palindromeStrings2[i]);
-				// std::cout << std::endl;
-				//INFO();
-				REQUIRE(a.add(palindromeStrings2[i]));
-				INFO("i = " << i << a.number());
+				REQUIRE( a.add(palindromeStrings2[i]) );
 				palindromes += a.number();
-				CHECK(a.number() >= 1);
+				REQUIRE( a.number() >= 1 );
 				a.clear();
 			}
 
-			CHECK(palindromes >= 345);
+			REQUIRE(palindromes >= 345);
 	}
 }
 
@@ -159,25 +113,23 @@ TEST_CASE( "cutTest2" ) {
 		vector<std::string> r1 = {"car"};
 		//vector<std::string> r1 = {"car"};
 		//fail
-		// vector<std::string> l2 = {"aa","bb"};
-		// vector<std::string> r2 = {"cca"};
+		vector<std::string> l2 = {"aa","bb"};
+		vector<std::string> r2 = {"cca"};
 
 			REQUIRE(a.cutTest2(l1, r1));
-			//REQUIRE(a.cutTest2(l2, r2) == 0);
+			REQUIRE(a.cutTest2(l2, r2) == 0);
 		}
 
 	//right is longer than left
 		SECTION( "right is longer than") {
 			//pass
-		//	vector<std::string> l1 = {"Rac"};
 			vector<std::string> l1 = {"Race"};
-		//	vector<std::string> r1 = {"e","car"};
 			vector<std::string> r1 = {"C","AR"};
 
+			//fail
 			vector<std::string> l2 = {"aab"};
 			vector<std::string> r2 = {"bbb","bcca"};
 
-			//INFO(l1.toString());
 			REQUIRE(a.cutTest2(l1, r1));
 			REQUIRE(a.cutTest2(l2, r2) == 0);
 		}	
@@ -230,4 +182,71 @@ TEST_CASE( "add only with palindromes" ){
 	REQUIRE(a.add(s));
 	REQUIRE(a.number() == 6);
 	REQUIRE( a.add(vector<string>{"I","was","awI"}));
+}
+
+TEST_CASE( "test_clear" ) {
+	FindPalindrome a;
+
+	REQUIRE( a.add("this"));
+	REQUIRE( a.number() == 0 );
+	
+	REQUIRE( a.add("sht") );
+	REQUIRE( a.number() == 0);
+
+	a.clear();
+
+	REQUIRE( a.add("siht") );
+	REQUIRE( a.number() == 0);
+
+	REQUIRE( a.add("this") );
+	REQUIRE( a.number() == 2);
+}
+
+
+TEST_CASE( "test_getVector" ) {
+	FindPalindrome a;
+
+	REQUIRE( a.add("Aman") );
+	REQUIRE( a.add("Aplan") );
+	REQUIRE( a.add("Acanal") );
+	REQUIRE( a.add("Panama") );
+
+	REQUIRE( a.number() == 1 );
+
+	vector<vector<string>> palindromeOutput = a.toVector();
+
+	REQUIRE( palindromeOutput[0][0] == "Aman" );
+	REQUIRE( palindromeOutput[0][1] == "Aplan" );
+	REQUIRE( palindromeOutput[0][2] == "Acanal" );
+	REQUIRE( palindromeOutput[0][3] == "Panama" );
+
+	a.clear();
+
+	REQUIRE( a.add("Race") );
+	REQUIRE( a.add("Car") );
+
+
+	REQUIRE( a.number() == 1 );
+
+	palindromeOutput = a.toVector();
+
+	REQUIRE( palindromeOutput[0][0] == "Race" );
+	REQUIRE( palindromeOutput[0][1] == "Car" );
+
+}
+
+TEST_CASE( "test_add(string)" ) {
+	FindPalindrome a;
+
+	REQUIRE( a.add("Race") );
+	REQUIRE( !a.add("Race") );
+
+	SECTION( "testing illegal characters" ) {
+		REQUIRE( !a.add("Race!") );
+		REQUIRE( !a.add("R ace"));
+		REQUIRE( !a.add( "R1ace") );
+	}
+
+	REQUIRE( a.add( "Car" ) );
+	REQUIRE( a.number() == 1);
 }

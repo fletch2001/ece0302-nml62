@@ -112,7 +112,6 @@ bool FindPalindrome::isPalindrome(string currentString) const
 FindPalindrome::FindPalindrome()
 {
 	// set number of palindromes to 0
-	permutations = 0;
 	num_palindromes = 0;
 }
 

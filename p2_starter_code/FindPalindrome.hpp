@@ -33,7 +33,6 @@ private:
 	bool isPalindrome(std::string currentString) const;
 	
 public:
-	unsigned permutations;
 	/** Constructor for the FindPalindrome object. */
 	FindPalindrome();
 

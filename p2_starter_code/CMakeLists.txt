@@ -5,7 +5,7 @@ project(P1 CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SOURCE FindPalindrome.cpp FindPalindrome.hpp FindPalindrome_test.cpp)
+set(SOURCE FindPalindrome.cpp FindPalindrome.hpp FindPalindrome_test.cpp sentence-palindromes.txt)
 set(SOURCE_MAIN FindPalindrome.cpp FindPalindrome.hpp)
 
 # create unittests

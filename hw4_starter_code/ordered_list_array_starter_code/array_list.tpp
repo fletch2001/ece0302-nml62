@@ -107,8 +107,8 @@ bool ArrayList<T>::insert(std::size_t position, const T& item){
     temp = nullptr;
 
     return true;
-    
-  }else { // all other cases return false
+
+  } else { // all other cases return false
     return false;
   }
 }
