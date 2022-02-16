@@ -295,6 +295,12 @@ bool FindPalindrome::add(const vector<string> & stringVector)
 		}
 	}
 
+	// check for no similar words in vector
+	for(unsigned i = 0; i < stringVector.size(); i++) {
+		for(unsigned j = 0; j < stringVector.size(); j++)
+		if(i != j && stringToLower(stringVector[i]) == stringToLower(stringVector[j])) return false;
+	}
+
 	// add each string to candidate vector
 	current_strings = stringVector;
 	vector<string> emptyVec;

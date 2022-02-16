@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <fstream>
 
 #define CATCH_CONFIG_MAIN
@@ -10,6 +11,15 @@ using std::vector;
 using std::string;
 using std::ifstream;
 
+std::string stringToLower(const string & value) {
+	std::string lower;
+	for(unsigned i = 0; i < value.size(); i++) {
+		lower += tolower(value[i]);
+	}
+
+	return lower;
+}
+
 /*******************************************************************************************************/
 /* number() and add(vector<string>) not tested in their own test cases but tested throughout all tests */
 /*******************************************************************************************************/
@@ -18,7 +28,7 @@ using std::ifstream;
 
 const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalindrome"}, {"Racecar"}, {"AAAA"}, {"IsawasI"}, {"aaAAAAAa"}, {"AAAAA"}, {"bBAaaAa"}, {"BbAaaA"}, {"bBbAAa"}};
 
-ifstream infile("sentence-palindromes.txt");
+ifstream infile("sentence-palindromes-modified.txt");
 
 TEST_CASE("test_file"){
 	if(infile) {
@@ -46,12 +56,22 @@ TEST_CASE("test_file"){
 					}
 					if(tmp.length()) row.push_back(tmp);
 					trueTests++;
+
+					// bool addRow = true;
 					
+					// for(unsigned i = 0; i < row.size(); i++) {
+					// 	for(unsigned j = 0; j < row.size(); j++) {
+					// 		if(i != j && stringToLower(row[i]) == stringToLower(row[j])) {
+					// 			addRow = false;
+					// 		}
+					// 	}
+					// }
+
+					//if(addRow) palindromeStrings2.push_back(row);
 					palindromeStrings2.push_back(row);
 					row.clear();
-					
+				
 				}
-
 
 				getline(infile, buf);
 			}
@@ -61,15 +81,20 @@ TEST_CASE("test_file"){
 			unsigned palindromes = 0;
 
 			for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
+				//for(string s : palindromeStrings2[i]) std::cout << s << " ";
+				//std::cout << std::endl; // <-- for debugging only
 				REQUIRE( a.add(palindromeStrings2[i]) );
 				palindromes += a.number();
 				REQUIRE( a.number() >= 1 );
 				a.clear();
 			}
 
-			REQUIRE(palindromes >= 345);
+			REQUIRE(palindromes >= palindromeStrings2.size());
 	}
 }
+
+TEST_CASE("") {}
+
 
 TEST_CASE( "cutTest1" , "[cut-tests]" ) {
 	FindPalindrome a;
@@ -174,6 +199,11 @@ TEST_CASE( "test add overload" ) {
 	REQUIRE(a.add(s));
 	vector<string> f = {"a","BB","CCC"};
 	REQUIRE(!a.add(f));
+
+	a.clear();
+
+	vector<string> f1 = {"a","a","AA","AAA"};
+	REQUIRE(!a.add(f1));
 }
 
 TEST_CASE( "add only with palindromes" ){
