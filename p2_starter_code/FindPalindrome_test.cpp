@@ -27,15 +27,11 @@ std::string stringToLower(const string & value) {
 //KEY: 0 1 1 1 1 1 1 0
 
 const vector<vector<std::string> > palindromeStrings = {{"IsawasI"}, {"Notapalindrome"}, {"Racecar"}, {"AAAA"}, {"IsawasI"}, {"aaAAAAAa"}, {"AAAAA"}, {"bBAaaAa"}, {"BbAaaA"}, {"bBbAAa"}};
+vector<vector<string>> palindromeStrings2;
 
-ifstream infile("sentence-palindromes-modified.txt");
-
-TEST_CASE("test_file"){
+TEST_CASE("testfile"){
+	ifstream infile("sentence-palindromes-modified.txt");
 	if(infile) {
-
-
-		vector<vector<string>> palindromeStrings2;
-		
 			unsigned trueTests = 0;
 			string buf;
 
@@ -57,22 +53,10 @@ TEST_CASE("test_file"){
 					if(tmp.length()) row.push_back(tmp);
 					trueTests++;
 
-					// bool addRow = true;
-					
-					// for(unsigned i = 0; i < row.size(); i++) {
-					// 	for(unsigned j = 0; j < row.size(); j++) {
-					// 		if(i != j && stringToLower(row[i]) == stringToLower(row[j])) {
-					// 			addRow = false;
-					// 		}
-					// 	}
-					// }
-
-					//if(addRow) palindromeStrings2.push_back(row);
 					palindromeStrings2.push_back(row);
 					row.clear();
 				
 				}
-
 				getline(infile, buf);
 			}
 
@@ -80,21 +64,56 @@ TEST_CASE("test_file"){
 			FindPalindrome a;
 			unsigned palindromes = 0;
 
-			for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
-				//for(string s : palindromeStrings2[i]) std::cout << s << " ";
-				//std::cout << std::endl; // <-- for debugging only
-				REQUIRE( a.add(palindromeStrings2[i]) );
-				palindromes += a.number();
-				REQUIRE( a.number() >= 1 );
-				a.clear();
-			}
+			SECTION( "ordered_palindromes" ) {
 
-			REQUIRE(palindromes >= palindromeStrings2.size());
+				for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
+					//for(string s : palindromeStrings2[i]) std::cout << s << " ";
+					//std::cout << std::endl; // <-- for debugging only
+					REQUIRE( a.add(palindromeStrings2[i]) );
+					palindromes += a.number();
+					REQUIRE( a.number() >= 1 );
+					a.clear();
+				}
+
+				REQUIRE(palindromes >= palindromeStrings2.size());
+			
+			SECTION("unordered-palindromes") {
+				vector<vector<string>> palindromeStrings3;
+				for(unsigned j = 0; j < palindromeStrings2.size(); j++) {
+				vector<unsigned int> indices;
+				
+				// make vector of ordered indices
+				for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
+					indices.push_back(i);
+				}
+
+				std::srand( unsigned (std::time(0)) );
+
+				std::random_shuffle( indices.begin(), indices.end() );
+
+				vector<string> row;
+
+				for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
+					// std::cout << palindromeStrings2[j][indices[i]] << " ";
+					row.push_back(palindromeStrings2[j][indices[i]]);
+				}
+
+				REQUIRE(a.add(row));
+				REQUIRE(a.number());
+				palindromes += a.number();
+
+				a.clear();
+
+				row.clear();
+				// std::cout << std::endl;
+
+				}
+
+				REQUIRE(palindromes >= palindromeStrings2.size());
+			}
+		}
 	}
 }
-
-TEST_CASE("") {}
-
 
 TEST_CASE( "cutTest1" , "[cut-tests]" ) {
 	FindPalindrome a;
@@ -280,3 +299,23 @@ TEST_CASE( "test_add(string)" ) {
 	REQUIRE( a.add( "Car" ) );
 	REQUIRE( a.number() == 1);
 }
+
+
+// for(unsigned j = 0; j < palindromeStrings2.size(); j++) {
+// 	vector<unsigned int> indices;
+	
+// 	// make vector of ordered indices
+// 	for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
+// 		indices.push_back(i);
+// 	}
+
+// 	std::srand( unsigned (std::time(0)) );
+
+// 	std::random_shuffle( indices.begin(), indices.end() );
+
+// 	for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
+// 		std::cout << palindromeStrings2[j][indices[i]] << " ";
+// 	}
+// 	std::cout << std::endl;
+
+// }

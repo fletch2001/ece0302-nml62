@@ -203,6 +203,7 @@ bool FindPalindrome::cutTest1(const vector<string> & stringVector)
 bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
                               const vector<string> & stringVector2)
 {
+	if(stringVector1.size() == 0 || stringVector2.size() == 0) return true; // 'base case', can't check in this case
 	// initialize empty strings
 	string leftStr;
 	string rightStr;
@@ -214,7 +215,7 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 	
 	// fill l and r vectors with 0s
 	std::fill(left_charCount.begin(), left_charCount.end(), 0);
-	std::fill(right_charCount.begin(), right_charCount.end(), 0);
+	std::fill(right_charCount.begin(), right_charCount.end(), 0); 
 
 	// fill left string
 	for(unsigned i = 0; i < stringVector1.size(); i++) {
@@ -226,24 +227,34 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 		rightStr += stringVector2[i];
 	}
 
+	
+
+	unsigned chars_in_substr = 0;
+
 	if(rightStr.length() > leftStr.length()) {
 		for(unsigned i = 0; i < leftStr.length(); i++)
 		{
 			//if(left_charCount[tolower(leftStr[i]) - ascii_a] == 0) unique_chars++
 			//if(right_charCount[tolower(rightStr[i]) - ascii_a] == 0) unique_chars++;
 			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
-			right_charCount[tolower(rightStr[rightStr.length() - 1 - i]) - ascii_a]++; // increase count of character in right
 		}
-
+		for(unsigned i = 0; i < rightStr.length(); i++) {
+			right_charCount[tolower(rightStr[i]) - ascii_a]++; // increase count of character in right
+		}
 		for(unsigned i = 0; i < 26; i++) {
 			if(left_charCount[i] > right_charCount[i]) return false; // case when there are omre of a character in left than right
 		}
 	} else {
-		for(unsigned i = 0; i < rightStr.length(); i++)
+		// count left chars
+		for(unsigned i = 0; i < leftStr.length(); i++)
 		{
-			if(left_charCount[i] == 0 && right_charCount[i] == 0) unique_chars++; // incremement number of unique characters if first occurence of a char
+			//if(left_charCount[tolower(leftStr[i]) - ascii_a] == 0) unique_chars++
+			//if(right_charCount[tolower(rightStr[i]) - ascii_a] == 0) unique_chars++;
 			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
-			right_charCount[tolower(rightStr[rightStr.length() - 1 - i]) - ascii_a]++; // increase count of character in right
+		}
+		// count right chars
+		for(unsigned i = 0; i < rightStr.length(); i++) {
+			right_charCount[tolower(rightStr[i]) - ascii_a]++; // increase count of character in right
 		}
 
 		for(unsigned i = 0, cmp = 0; i < 26; i++) {
