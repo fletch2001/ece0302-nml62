@@ -5,7 +5,7 @@ project(P1 CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SOURCE FindPalindrome.cpp FindPalindrome.hpp FindPalindrome_test.cpp sentence-palindromes.txt)
+set(SOURCE FindPalindrome.cpp FindPalindrome.hpp FindPalindrome_test.cpp sentence-palindromes.txt sentence-palindromes-modified.txt parsePalindromeTests.py)
 set(SOURCE_MAIN FindPalindrome.cpp FindPalindrome.hpp)
 
 # create unittests
@@ -18,7 +18,7 @@ enable_testing()
 add_test(unittest FindPalindrome-tests)
 
 # include test sample text file
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sentence-palindromes.txt
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/parsePalindromeTests.py
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_custom_target(submission COMMAND

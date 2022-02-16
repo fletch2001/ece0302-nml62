@@ -1,5 +1,3 @@
-## this script is to eliminate all sentences that are illegal as described in the project specification. It also removes all punctuation. ##
-
 import re
 
 infile = open("sentence-palindromes.txt", 'r')
