@@ -210,8 +210,6 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 
 	const unsigned ascii_a = 97; // ascii A-- for indexing charcount vectors
 	vector<unsigned int> left_charCount(26), right_charCount(26); //vectors of left and right character counts
-
-	unsigned unique_chars = 0; // amount of unique characters between both strings
 	
 	// fill l and r vectors with 0s
 	std::fill(left_charCount.begin(), left_charCount.end(), 0);
@@ -227,15 +225,11 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 		rightStr += stringVector2[i];
 	}
 
-	
-
 	unsigned chars_in_substr = 0;
 
 	if(rightStr.length() > leftStr.length()) {
 		for(unsigned i = 0; i < leftStr.length(); i++)
 		{
-			//if(left_charCount[tolower(leftStr[i]) - ascii_a] == 0) unique_chars++
-			//if(right_charCount[tolower(rightStr[i]) - ascii_a] == 0) unique_chars++;
 			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
 		}
 		for(unsigned i = 0; i < rightStr.length(); i++) {
@@ -248,8 +242,6 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 		// count left chars
 		for(unsigned i = 0; i < leftStr.length(); i++)
 		{
-			//if(left_charCount[tolower(leftStr[i]) - ascii_a] == 0) unique_chars++
-			//if(right_charCount[tolower(rightStr[i]) - ascii_a] == 0) unique_chars++;
 			left_charCount[tolower(leftStr[i]) - ascii_a]++; // increase count of character in left
 		}
 		// count right chars
@@ -258,9 +250,7 @@ bool FindPalindrome::cutTest2(const vector<string> & stringVector1,
 		}
 
 		for(unsigned i = 0, cmp = 0; i < 26; i++) {
-			//if(left_charCount[i] || right_charCount[i]) cmp++; // increase cmp if character occurrs at index of either vector (this is to reduce search time)
 			if(left_charCount[i] < right_charCount[i]) return false; // case when there are omre of a character in left than right
-			//if(cmp == unique_chars) break; // if all characters that exist in the two strings have been checked, break and return true
 		}
 	}
 	

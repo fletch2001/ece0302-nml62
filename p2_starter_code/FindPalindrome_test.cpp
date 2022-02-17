@@ -77,6 +77,8 @@ TEST_CASE("testfile"){
 
 				REQUIRE(palindromes >= palindromeStrings2.size());
 			
+			}
+
 			SECTION("unordered-palindromes") {
 				vector<vector<string>> palindromeStrings3;
 				for(unsigned j = 0; j < palindromeStrings2.size(); j++) {
@@ -111,7 +113,6 @@ TEST_CASE("testfile"){
 
 				REQUIRE(palindromes >= palindromeStrings2.size());
 			}
-		}
 	}
 }
 
