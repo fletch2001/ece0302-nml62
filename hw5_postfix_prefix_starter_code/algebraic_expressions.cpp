@@ -1,3 +1,6 @@
+#include <stack>
+using std::stack;
+
 #include <string>
 using std::string;
 
@@ -42,7 +45,18 @@ bool isPost(string s) {
 }
 
 void convert(string &postfix, string &prefix) {
-
-  // TODO
+  char lastChar = postfix[postfix.size() -1]; // get last char of postfix
   
+  postfix.pop_back();
+
+  if(!isoperator(lastChar)) {
+    prefix += lastChar;
+  } else {
+    string tmp;
+    prefix += lastChar;
+    convert(postfix, tmp);
+    convert(postfix, prefix);
+    prefix+= tmp;
+  }
+
 }
