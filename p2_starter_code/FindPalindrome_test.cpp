@@ -37,9 +37,10 @@ TEST_CASE("testfile"){
 
 			std::getline(infile, buf);
 
-			vector<string> row;
 
 			while(infile) {
+				vector<string> row;
+				
 				if(buf[0] == '*' && buf[1] == '*'); // comment; skip to next line
 				else {
 					string tmp;
@@ -65,7 +66,7 @@ TEST_CASE("testfile"){
 			unsigned palindromes = 0;
 
 			SECTION( "ordered_palindromes" ) {
-
+			//	std::cout << "section 1" << std::endl;
 				for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
 					//for(string s : palindromeStrings2[i]) std::cout << s << " ";
 					//std::cout << std::endl; // <-- for debugging only
@@ -80,38 +81,89 @@ TEST_CASE("testfile"){
 			}
 
 			SECTION("unordered-palindromes") {
+			//	std::cout << "section 2" << std::endl;
 				vector<vector<string>> palindromeStrings3;
 				for(unsigned j = 0; j < palindromeStrings2.size(); j++) {
-				vector<unsigned int> indices;
+					vector<unsigned int> indices;
 				
-				// make vector of ordered indices
-				for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
-					indices.push_back(i);
-				}
+					// make vector of ordered indices
+					for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
+						indices.push_back(i);
+					}
 
-				std::srand( unsigned (std::time(0)) );
+					std::srand( unsigned (std::time(0)) );
 
-				std::random_shuffle( indices.begin(), indices.end() );
+					std::random_shuffle( indices.begin(), indices.end() );
 
-				vector<string> row;
+					vector<string> row;
 
-				for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
-					// std::cout << palindromeStrings2[j][indices[i]] << " ";
-					row.push_back(palindromeStrings2[j][indices[i]]);
-				}
+					for(unsigned i = 0; i < palindromeStrings2[j].size(); i++) {
+						// std::cout << palindromeStrings2[j][indices[i]] << " ";
+						row.push_back(palindromeStrings2[j][indices[i]]);
+					}
 
-				REQUIRE(a.add(row));
-				REQUIRE(a.number());
-				palindromes += a.number();
+					REQUIRE(a.add(row));
+					REQUIRE(a.number());
+					palindromes += a.number();
 
-				a.clear();
+					a.clear();
 
-				row.clear();
-				// std::cout << std::endl;
+					row.clear();
+					// std::cout << std::endl;
 
 				}
 
 				REQUIRE(palindromes >= palindromeStrings2.size());
+			}
+
+			/*** THIS SECTION DOESNT WORK BECAUSE THERE ARE STILL SENTENCES ON THE LIST THAT CONTAIN PALINDROMES WHEN 2+ WORDS ARE REMOVED !! ***/
+			// SECTION( "invalid_palindromes" ) {
+
+			// 	unsigned lineNum = 0;
+
+			// 	std::cout << "section 3" << std::endl;
+			// 	vector<string> row;
+			// 	for(unsigned i = 0; i < palindromeStrings2.size(); i++) {
+					
+			// 		std::srand(0);
+
+			// 		unsigned skip = rand() % palindromeStrings2[i].size();
+			// 		unsigned skip2 = (rand() + skip + 1) % palindromeStrings2[i].size();
+					
+			// 		// recalculate skips
+			// 		if(skip == skip2) {
+			// 			skip2 = (rand() + palindromeStrings2[i].size() / 2 + skip2) % palindromeStrings2.size();
+			// 		}
+
+			// 		for(unsigned j = 0; j < palindromeStrings2[i].size(); j++) {
+			// 			if(j != skip && j != skip2) row.push_back(palindromeStrings2[i][j]);
+			// 		}
+
+			// 		lineNum++;
+
+			// 		std::cout << lineNum << ": ";
+
+			// 		for(string w : row) {
+			// 			std::cout << w << " ";
+			// 		}
+
+			// 		std::cout << std::endl;
+
+			// 		REQUIRE(a.add(row));
+			// 		REQUIRE(!a.number());
+
+			// 		a.clear();
+
+			// 		row.clear();				
+			// 	}
+
+			// }
+
+			SECTION( "invalid_sentences") {
+				REQUIRE(a.add({"This", "is", "not", "a", "palindrome"}));
+				REQUIRE(!a.number());
+
+				a.clear();
 			}
 	}
 }
@@ -211,6 +263,19 @@ TEST_CASE( "test add" ) {
 	REQUIRE(!a.add("two words"));
 
 	REQUIRE(a.number() == 2);
+
+	a.clear();
+
+	SECTION( "testing invalid characters") {
+		vector<string> illegal_chars = {"!","@","#","$","%","^","&","*","(",")","_","-","+","=","[","{","`",",",".","?"};
+		for(string c : illegal_chars) {
+			REQUIRE_FALSE(a.add(c));
+		}
+
+		for(unsigned i = 0; i < 49; i++) {
+			REQUIRE_FALSE(a.add(std::to_string(i)));
+		}
+	}
 }
 
 TEST_CASE( "test add overload" ) {

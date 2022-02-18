@@ -46,15 +46,7 @@ void FindPalindrome::recursiveFindPalindromes(vector<string>
 {
 	// base case: currentStringVector size == 0
 	if(currentStringVector.size() == 0) {
-		
-		// if candidateStringVector passes cutTest2, it is a palindrome
-		//if(cutTest2(vector<string>(candidateStringVector.begin(), candidateStringVector.begin() + (candidateStringVector.size() / 2)), vector<string>(candidateStringVector.begin() + candidateStringVector.size(), candidateStringVector.end()))) {
-		// if(cutTest1(candidateStringVector)) {
-		// 	palindromes.push_back( candidateStringVector ); // if vector is a palindrome, add to vector of palindromes
-		// 	num_palindromes++; // increase number of palindromes
-		// }
-
-
+	
 		// checking for palindrome
 
 		string test_string; // string to concatenate vector into
