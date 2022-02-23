@@ -69,20 +69,26 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 		} else {
 			thisToken.tokenType = START_TAG; // set start tag otherwise
 		}
+
 		for(unsigned i = 1 + start_index; i < nextEnd - end_index; i++) {
-			if(inputString[i] == ' ') {
+			// checks that whitespace only exists if allowed by tag type
+			if(inputString[i] == ' ' && thisToken.tokenType == START_TAG || thisToken.tokenType == EMPTY_TAG) {
 				break; // set space index and break
+			// checks for illegal characters in tag name
+			} else if(inputString[i] >= 32 && inputString[i] <= 64 || inputString[i] >= 91 && inputString[i] <= 96 || inputString[i] >= 123 && inputString[i] <= 126) {
+				this->clear();
+				return false;
 			}
 			elementStr += inputString[i]; // append tag character to element string
 		}
 
-		parseStack->push(elementStr); // add element name to stack
+		elementNameBag->add(elementStr); // add element name to bag
+		if(thisToken.tokenType == START_TAG || thisToken.tokenType == END_TAG) parseStack->push(elementStr); // add element name to stack if type is start or end tag
 		thisToken.tokenString = elementStr; // set token string
 
 		tokenizedInputVector.push_back(thisToken); // push token to vector
 
 		elementStr.clear(); // clear elementStr
-
 
 		// read in any content
 		elementStr = inputString.substr(nextEnd + 1, nextStart - nextEnd - 1);
@@ -96,8 +102,6 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 
 		// call tokenizeInputString again on substring starting with next <
 		tokenizeInputString(inputString.substr(nextStart));
-
-
 
 		return true;
 	}
@@ -115,7 +119,26 @@ static std::string deleteAttributes(std::string input)
 // TODO: Implement the parseTokenizedInput method here
 bool XMLParser::parseTokenizedInput()
 {
-	return false;
+	Stack<std::string> testStack;
+
+	// split parseStack into two matching stacks to compare elements that must satisfy BPG rule
+	while(testStack.size() != parseStack->size()) {
+		testStack.push(parseStack->peek());
+		parseStack->pop();
+	}
+
+	while(testStack.size() > 0 && parseStack->size() > 0) {
+		if(testStack.peek() != parseStack->peek()) return false;
+		else { 
+			testStack.pop(); 
+			parseStack->pop(); 
+		}
+	}
+
+
+	// read through all tags that are not declarations or content to make sure no illegal characters are used
+
+	return true;
 }
 
 // TODO: Implement the clear method here
