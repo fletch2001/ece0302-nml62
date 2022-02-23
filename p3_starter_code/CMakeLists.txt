@@ -11,10 +11,12 @@ set(CODE_TO_SUBMIT Stack.cpp XMLParser.hpp XMLParser.cpp XMLParser_test.cpp)
 set(SOURCE_STACK_MAIN mainStack.cpp)
 set(SOURCE_XMLPARSER XMLParser.cpp)
 set(SOURCE_XMLPARSER_TEST XMLParser.cpp XMLParser_test.cpp)
+set(SOURCE_XML_MORE_TESTS XMLParser.cpp XMLParser_more_test.cpp)
 set(SOURCE_XMLPARSER_MAIN XMLParser.cpp mainXMLParser.cpp)
 
 # create unittests
 add_executable(XMLParser-tests catch.hpp ${SOURCE_XMLPARSER_TEST})
+add_executable(XMLParser-more-tests catch.hpp ${SOURCE_XML_MORE_TESTS})
 
 enable_testing()
 

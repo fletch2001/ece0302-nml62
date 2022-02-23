@@ -11,126 +11,98 @@
 XMLParser::XMLParser()
 {
 	parseStack = new Stack<std::string>; // new stack for holding elements while parsing
+	elementNameBag = new Bag<std::string>; // new bag for holding elements
 }  // end default constructor
 
 // TODO: Implement the destructor here
 XMLParser::~XMLParser()
 {
+	clear(); // use clear member function
 }  // end destructor
 
 // TODO: Implement the tokenizeInputString method
 bool XMLParser::tokenizeInputString(const std::string &inputString)
 {
+	if(inputString.length() == 0) {	return false; } // base case
 	if(inputString[0] != '<' 
-	&& inputString[inputString.length() - 1] != '>') { return false; } // returns false if first and last char of string are not < and > (also include clear)
+	|| inputString[inputString.length() - 1] != '>') { this->clear(); return false; } // returns false if first and last char of string are not < and > (also include clear)
 
-	unsigned nextEnd = inputString.find('>', 1); // find next > in string
+	else {
 
-	unsigned start_index = 0; // int to offset loop start
-	unsigned end_index = 0; // int to offset loop end
+		if(inputString.find('>', 1) == -1) { this->clear(); return false; } // return false and clear if can't find a next >
 
-	TokenStruct thisToken; // temp token struct to fill up
+		unsigned nextEnd = inputString.find('>', 1); // find next > in string
+		unsigned nextStart;
+		unsigned start_index = 0; // int to offset loop start
+		unsigned end_index = 0; // int to offset loop end
 
-	std::string elementStr;
+		TokenStruct thisToken; // temp token struct to fill up
 
-	// checking for declaration
-	if(inputString[1] == '?') { // check that char before next > is a ?
-		if(nextEnd == string::npos) { return false; } // no closing tag found. return false (also include desctruction methods)
-		else if(inputString[nextEnd - 1] != '?') { return false; } // if the charcater before the next > is not a ?, then there is an illegal character in the tag and return false and clear
-		// ** push back declaration if need be **
-		thisToken.tokenType = DECLARATION; // set token type to declaration
+		std::string elementStr;
 
+		if(inputString.find('<', nextEnd) == -1) { nextStart = nextEnd + 1; } // only return false if can't find another start tag AND the next tag is not an end tag
+		else { nextStart = inputString.find('<', nextEnd); }
 
-		for(unsigned i = 2; i < nextEnd - 1; i++) {
-			elementStr += inputString[i]; // append character in declaration to elementStr
+		if(inputString.find('<', 1) < nextEnd) { this->clear(); return false; } // check for another < before the next >
+		if(inputString.find('>', nextEnd + 1) < nextStart) { this->clear(); return false; } // check for > before next <
+
+		// checking for declaration
+		if(inputString[1] == '?') { // check that char before next > is a ?
+			thisToken.tokenType = DECLARATION; // set token type to declaration
+
+			for(unsigned i = 2; i < nextEnd - 1; i++) {
+				elementStr += inputString[i]; // append character in declaration to elementStr
+			}
+
+			thisToken.tokenString = elementStr; // set token string
+			tokenizedInputVector.push_back(thisToken); // push token to vector
+			tokenizeInputString(inputString.substr(nextStart)); // recursively call tokenize string input with a substring of input string starting at the next <
+			return true; // return true when token added to vector
 		}
-
-		thisToken.tokenString = elementStr;
-
-		tokenizedInputVector.push_back(thisToken); // push token to vector
-		return true; // return true when token added to vector
-	}
-	// check for empty tag
-	else if(inputString[nextEnd - 1] == '/') { // type is empty tag
-		thisToken.tokenType = EMPTY_TAG; // set tag type
-		
-		// check that tag name is valid
-		end_index = 1;
-
-		// for(unsigned i = 1; i < nextEnd; i++) {
-		// 	if(inputString[i] == ' ') {
-		// 		break; // set space index and break
-		// 	}
-		// 	elementStr += inputString[i];
-		// }
-
-		// parseStack->push(elementStr); // add element name to stack
-		// thisToken.tokenString = elementStr; // set string
-
-		// tokenizedInputVector.push_back(thisToken);
-		// return true;
-
-		// // find first whitespace in string
-		// unsigned sp = inputString.substr(0, nextEnd).find(' ', 0);
-
-		// for(unsigned i = sp; i < nextEnd - 1; i++) {
-		// 	elementStr += inputString[i]; // append characters of attribute to elementStr
-		// }
-
-	} else if(inputString[1] == '/') { // checking for closing tag
-		start_index = 1;
-	// else { // otherwise, tag is a start-tag
-	// 	thisToken.tokenType = START_TAG; // set token type
-	// 	unsigned sp = 0; // space index
-	// 	for(unsigned i = 1; i < nextEnd; i++) {
-	// 		if(inputString[i] == ' ') {
-	// 			break; // set space index and break
-	// 		}
-	// 		elementStr += inputString[i];
-	// 	}
-
-	// 	parseStack->push(elementStr); // add element name to stack
-	// 	thisToken.tokenString = elementStr; // set string
-	}
-
-	for(unsigned i = 1 + start_index; i < nextEnd - end_index; i++) {
+		// check for empty tag
+		else if(inputString[nextEnd - 1] == '/') { // type is empty tag
+			thisToken.tokenType = EMPTY_TAG; // set tag typee
+			end_index = 1; // set loop end offset to 1
+		} else if(inputString[1] == '/') { // checking for closing tag
+			thisToken.tokenType = END_TAG; // set end tag
+			start_index = 1; // set loop start offset to 1
+		} else {
+			thisToken.tokenType = START_TAG; // set start tag otherwise
+		}
+		for(unsigned i = 1 + start_index; i < nextEnd - end_index; i++) {
 			if(inputString[i] == ' ') {
 				break; // set space index and break
 			}
-			elementStr += inputString[i];
+			elementStr += inputString[i]; // append tag character to element string
 		}
 
 		parseStack->push(elementStr); // add element name to stack
-		thisToken.tokenString = elementStr; // set string
+		thisToken.tokenString = elementStr; // set token string
 
-		tokenizedInputVector.push_back(thisToken);
+		tokenizedInputVector.push_back(thisToken); // push token to vector
 
-
-	// loop through string until next >
-	// for(unsigned i = 1 + start_index; i < nextEnd; i++) {
-	// 	if(inputString[i] >= 32 && inputString[i] <= 47 || inputString[i] >= 58 && inputString[i] <= 64) {
-	// 		return false; // invalid character in string
-	// 	} else {
-	// 		elementStr += inputString[i]; // else append string contents to elementStr
-	// 	}
-	// }
-
-	std::cout << elementStr << std::endl;
-
-	unsigned nextStart = inputString.find('<', nextEnd);
-
-	// call tokenizeInputString again on substring starting with next <
-	tokenizeInputString(inputString.substr(nextStart));
-
-	/* <123456> : l = 8
-		str[7] = >
-		str[1] = 1
-		str[l - 1] = >
-		str[l - 2] = 6
-	*/
+		elementStr.clear(); // clear elementStr
 
 
-	return true;
+		// read in any content
+		elementStr = inputString.substr(nextEnd + 1, nextStart - nextEnd - 1);
+
+		if(elementStr.find_first_not_of(" ") == -1) elementStr.clear(); // clear string if string is all whitespace
+
+		// add content to content token
+		if(elementStr.length() > 0) {
+			tokenizedInputVector.push_back(TokenStruct{StringTokenType::CONTENT, std::string(elementStr)});
+		}
+
+		// call tokenizeInputString again on substring starting with next <
+		tokenizeInputString(inputString.substr(nextStart));
+
+
+
+		return true;
+	}
+
+	return false;
 }  // end
 
 // TODO: Implement a helper function to delete attributes from a START_TAG
@@ -149,6 +121,10 @@ bool XMLParser::parseTokenizedInput()
 // TODO: Implement the clear method here
 void XMLParser::clear()
 {
+	//parseStack->clear(); // clear stack
+	delete parseStack; // delete parseStack (also clears it)
+	delete elementNameBag;
+	tokenizedInputVector.clear();
 }
 
 vector<TokenStruct> XMLParser::returnTokenizedInput() const
