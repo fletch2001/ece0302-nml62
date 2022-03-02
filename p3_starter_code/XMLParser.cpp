@@ -23,6 +23,7 @@ XMLParser::~XMLParser()
 // TODO: Implement the tokenizeInputString method
 bool XMLParser::tokenizeInputString(const std::string &inputString)
 {
+	cout << inputString << endl;
 	if(inputString.length() == 0) {	return false; } // base case
 	if(inputString[0] != '<' 
 	|| inputString[inputString.length() - 1] != '>') { this->clear(); return false; } // returns false if first and last char of string are not < and > (also include clear)
@@ -72,13 +73,12 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 
 		for(unsigned i = 1 + start_index; i < nextEnd - end_index; i++) {
 			// checks that whitespace only exists if allowed by tag type
-			if(inputString[i] == ' ' && thisToken.tokenType == START_TAG || thisToken.tokenType == EMPTY_TAG) {
-				break; // set space index and break
+			if(inputString[i] == ' ') {
+				if(thisToken.tokenType != EMPTY_TAG && thisToken.tokenType != START_TAG) {
+					return false;
+				} else break; // set space index and break
 			// checks for illegal characters in tag name
-			} else if(inputString[i] >= 32 && inputString[i] <= 64 || inputString[i] >= 91 && inputString[i] <= 96 || inputString[i] >= 123 && inputString[i] <= 126) {
-				this->clear();
-				return false;
-			}
+			} 
 			elementStr += inputString[i]; // append tag character to element string
 		}
 
@@ -121,8 +121,19 @@ bool XMLParser::parseTokenizedInput()
 {
 	Stack<std::string> testStack;
 
+	// check for illegal characters
+	for(unsigned i = 0; i < tokenizedInputVector.size(); i++) {
+		if( tokenizedInputVector[i].tokenType == DECLARATION) {
+			continue;
+		}
+		//['!','"','#','$','%','&','\'','(',')','*','+',',','/',';','<','=','>','?','@','[','\\',']','^','`','{','|','}','~','.']
+		else if(!isalpha(tokenizedInputVector[i].tokenString[0]) || tokenizedInputVector[i].tokenString.find("!\"#$%&\'()*+,/;<=>?@[\\]^`{|}~", 0, 1) != -1) {
+			return false;
+		}
+	}
+
 	// split parseStack into two matching stacks to compare elements that must satisfy BPG rule
-	while(testStack.size() != parseStack->size()) {
+	while(testStack.size() < parseStack->size()) {
 		testStack.push(parseStack->peek());
 		parseStack->pop();
 	}

@@ -161,6 +161,9 @@ TEST_CASE( "Test XMLParser parseTokenizedInput Handout-0", "[XMLParser]" )
 											TokenStruct{StringTokenType::EMPTY_TAG, std::string("this_is_empty_tag")},
 											TokenStruct{StringTokenType::END_TAG, std::string("test")}};
 		std::vector<TokenStruct> output = myXMLParser.returnTokenizedInput();
+		for(TokenStruct T : output) {
+			cout << T.tokenString << endl;
+		}
 		REQUIRE(result.size() == output.size());
 		success = myXMLParser.parseTokenizedInput();
 		REQUIRE(success);
