@@ -7,6 +7,7 @@
 #include <assert.h>
 #include "XMLParser.hpp"
 
+
 // TODO: Implement the constructor here
 XMLParser::XMLParser()
 {
@@ -14,6 +15,8 @@ XMLParser::XMLParser()
 	elementNameBag = new Bag<std::string>; // new bag for holding elements
 	parseSuccess = 0;
 }  // end default constructor
+
+// conflict test
 
 // TODO: Implement the destructor here
 XMLParser::~XMLParser()

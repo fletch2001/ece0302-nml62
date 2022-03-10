@@ -45,18 +45,18 @@ bool isPost(string s) {
 }
 
 void convert(string &postfix, string &prefix) {
-  char lastChar = postfix[postfix.size() -1]; // get last char of postfix
+  char endCh = postfix[postfix.size() -1]; // get last char of postfix
   
-  postfix.pop_back();
+  postfix.pop_back(); // remove last char of postfix
 
-  if(!isoperator(lastChar)) {
-    prefix += lastChar;
-  } else {
-    string tmp;
-    prefix += lastChar;
-    convert(postfix, tmp);
-    convert(postfix, prefix);
-    prefix+= tmp;
+  if(!isoperator(endCh)) {
+    prefix += endCh; // base case: if last char is an alphabetical character, append to prefix
+  } else { // otherwise:
+    string tmp; // temp string
+    prefix += endCh; // append math symbol to prefix
+    convert(postfix, tmp); // convert postfix to empty temp string
+    convert(postfix, prefix); // continue with postfix to already initialized prefix string
+    prefix+= tmp; // add tmp to prefix
   }
 
 }
