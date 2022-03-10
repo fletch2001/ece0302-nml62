@@ -7,6 +7,9 @@
 #include <assert.h>
 #include "XMLParser.hpp"
 
+
+// CONFLICT HERE
+
 // TODO: Implement the constructor here
 XMLParser::XMLParser()
 {
