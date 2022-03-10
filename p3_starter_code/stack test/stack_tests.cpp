@@ -77,3 +77,11 @@ TEST_CASE( "peek" ) {
     REQUIRE(s.pop());
     REQUIRE(s.peek() == 1);
 }
+
+TEST_CASE("testing DAM stack") {
+    Stack<int> *s = new Stack<int>;
+    s->push(1);
+
+    delete s;
+    s = nullptr;
+}

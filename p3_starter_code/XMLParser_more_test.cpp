@@ -1,5 +1,4 @@
 #define CATCH_CONFIG_MAIN
-#define CATCH_CONFIG_COLOUR_NONE
 #include <iostream>
 #include "catch.hpp"
 #include "XMLParser.hpp"
@@ -161,9 +160,9 @@ TEST_CASE( "Test XMLParser parseTokenizedInput Handout-0", "[XMLParser]" )
 											TokenStruct{StringTokenType::EMPTY_TAG, std::string("this_is_empty_tag")},
 											TokenStruct{StringTokenType::END_TAG, std::string("test")}};
 		std::vector<TokenStruct> output = myXMLParser.returnTokenizedInput();
-		for(TokenStruct T : output) {
-			cout << T.tokenString << endl;
-		}
+		// for(TokenStruct T : output) {
+		// 	cout << T.tokenString << endl;
+		// }
 		REQUIRE(result.size() == output.size());
 		success = myXMLParser.parseTokenizedInput();
 		REQUIRE(success);
@@ -201,4 +200,3 @@ TEST_CASE( "Test XMLParser Final Handout-0", "[XMLParser]" )
 		REQUIRE(myXMLParser.containsElementName("color_swatch"));
 		REQUIRE(myXMLParser.frequencyElementName("color_swatch") == 15);
 }
-

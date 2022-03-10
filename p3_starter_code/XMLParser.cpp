@@ -12,6 +12,7 @@ XMLParser::XMLParser()
 {
 	parseStack = new Stack<std::string>; // new stack for holding elements while parsing
 	elementNameBag = new Bag<std::string>; // new bag for holding elements
+	parseSuccess = 0;
 }  // end default constructor
 
 // TODO: Implement the destructor here
@@ -23,7 +24,9 @@ XMLParser::~XMLParser()
 // TODO: Implement the tokenizeInputString method
 bool XMLParser::tokenizeInputString(const std::string &inputString)
 {
-	cout << inputString << endl;
+	parseSuccess = 0; // force parseSuccess to 0
+
+	// cout << inputString << endl;
 	if(inputString.length() == 0) {	return false; } // base case
 	if(inputString[0] != '<' 
 	|| inputString[inputString.length() - 1] != '>') { this->clear(); return false; } // returns false if first and last char of string are not < and > (also include clear)
@@ -44,12 +47,17 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 		if(inputString.find('<', nextEnd) == -1) { nextStart = nextEnd + 1; } // only return false if can't find another start tag AND the next tag is not an end tag
 		else { nextStart = inputString.find('<', nextEnd); }
 
-		if(inputString.find('<', 1) < nextEnd) { this->clear(); return false; } // check for another < before the next >
+		if(inputString.find('<', 1) < nextEnd + 1) { this->clear(); return false; } // check for another < before the next >
 		if(inputString.find('>', nextEnd + 1) < nextStart) { this->clear(); return false; } // check for > before next <
 
 		// checking for declaration
 		if(inputString[1] == '?') { // check that char before next > is a ?
-			thisToken.tokenType = DECLARATION; // set token type to declaration
+			if( inputString[nextEnd - 1] == '?' )
+				thisToken.tokenType = DECLARATION; // set token type to declaration
+			else { // not a valid declaration; clear class and return false
+				this->clear();
+				return false;
+			}
 
 			for(unsigned i = 2; i < nextEnd - 1; i++) {
 				elementStr += inputString[i]; // append character in declaration to elementStr
@@ -71,19 +79,35 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 			thisToken.tokenType = START_TAG; // set start tag otherwise
 		}
 
-		for(unsigned i = 1 + start_index; i < nextEnd - end_index; i++) {
-			// checks that whitespace only exists if allowed by tag type
-			if(inputString[i] == ' ') {
-				if(thisToken.tokenType != EMPTY_TAG && thisToken.tokenType != START_TAG) {
-					return false;
-				} else break; // set space index and break
-			// checks for illegal characters in tag name
-			} 
-			elementStr += inputString[i]; // append tag character to element string
+		// CHECK FOR ILLEGAL CHARACTERS HERE
+		// for(unsigned i = 0; i < tokenizedInputVector.size(); i++) {
+		// if( tokenizedInputVector[i].tokenType == DECLARATION) {
+		// 	continue;
+		// }
+		// //['!','"','#','$','%','&','\'','(',')','*','+',',','/',';','<','=','>','?','@','[','\\',']','^','`','{','|','}','~','.']
+		// else if(!isalpha(tokenizedInputVector[i].tokenString[0]) || tokenizedInputVector[i].tokenString.find("!\"#$%&\'()*+,/;<=>?@[\\]^`{|}~", 0, 1) != -1) {
+		// 	return false;
+		// }
+
+		// find next end; the next > or space before a >
+		unsigned tempEnd = inputString.find(' ', 1);
+		if( tempEnd == -1 || tempEnd > nextEnd) tempEnd = nextEnd;
+		else if( thisToken.tokenType == END_TAG && tempEnd > nextEnd) {
+			this->clear(); // clear structure
+			return false; // there is a space before the > in an end tag, which is illegal
 		}
 
-		elementNameBag->add(elementStr); // add element name to bag
-		if(thisToken.tokenType == START_TAG || thisToken.tokenType == END_TAG) parseStack->push(elementStr); // add element name to stack if type is start or end tag
+		for( unsigned i = 1 + start_index; i < tempEnd - end_index; i++ ) {
+
+			if( i - (1 + start_index) == 0 && !isalpha(inputString[i]) || inputString[i] >= 33 && inputString[i] <= 44 || inputString[i] == 46 || inputString[i] == 47 || inputString[i] >= 58 && inputString[i] <= 64 || inputString[i] >= 91 && inputString[i] <= 94 || inputString[i] == 96 || inputString[i] >= 123 && inputString[i] <= 126) {
+				this->clear(); // illegal character; clear structure and return false
+				return false;
+			}
+
+			elementStr += inputString[i]; // append tag char to element string
+		}
+
+		if( thisToken.tokenType != END_TAG) elementNameBag->add(elementStr); // add element name to bag
 		thisToken.tokenString = elementStr; // set token string
 
 		tokenizedInputVector.push_back(thisToken); // push token to vector
@@ -119,62 +143,57 @@ static std::string deleteAttributes(std::string input)
 // TODO: Implement the parseTokenizedInput method here
 bool XMLParser::parseTokenizedInput()
 {
-	Stack<std::string> testStack;
+	if( !tokenizedInputVector.size() ) return false;
 
-	// check for illegal characters
+
 	for(unsigned i = 0; i < tokenizedInputVector.size(); i++) {
-		if( tokenizedInputVector[i].tokenType == DECLARATION) {
-			continue;
-		}
-		//['!','"','#','$','%','&','\'','(',')','*','+',',','/',';','<','=','>','?','@','[','\\',']','^','`','{','|','}','~','.']
-		else if(!isalpha(tokenizedInputVector[i].tokenString[0]) || tokenizedInputVector[i].tokenString.find("!\"#$%&\'()*+,/;<=>?@[\\]^`{|}~", 0, 1) != -1) {
-			return false;
-		}
+		if( tokenizedInputVector[i].tokenType == START_TAG ) {
+			parseStack->push(tokenizedInputVector[i].tokenString); // push start tag name
+		} else if( tokenizedInputVector[i].tokenType == END_TAG ) {
+			if( parseStack->peek() != tokenizedInputVector[i].tokenString ) {
+				this->clear(); // clear class
+				return false; // if top of stack (last start tag read in) does not equal the first end tag seen, return false
+			}
+			else parseStack->pop(); // otherwise, remove start tag from stack
+		} else if( tokenizedInputVector[i].tokenType == CONTENT && parseStack->isEmpty()) {
+				this->clear(); // clear class
+				return false; // if there are no start tags in stack, and tag is a content tag, return false
+		} 
 	}
 
-	// split parseStack into two matching stacks to compare elements that must satisfy BPG rule
-	while(testStack.size() < parseStack->size()) {
-		testStack.push(parseStack->peek());
-		parseStack->pop();
-	}
-
-	while(testStack.size() > 0 && parseStack->size() > 0) {
-		if(testStack.peek() != parseStack->peek()) return false;
-		else { 
-			testStack.pop(); 
-			parseStack->pop(); 
-		}
-	}
-
-
-	// read through all tags that are not declarations or content to make sure no illegal characters are used
-
+	parseSuccess = 1; // if for loop does not return a false, tokenized vector has been successfully parsed. return true and set parse success flag to 1
 	return true;
 }
 
 // TODO: Implement the clear method here
 void XMLParser::clear()
-{
-	//parseStack->clear(); // clear stack
+{	
 	delete parseStack; // delete parseStack (also clears it)
+	parseStack = nullptr; // set nullptr to parseStack
+	
 	delete elementNameBag;
+	elementNameBag = nullptr; // set nullptr to elementNameBag
 	tokenizedInputVector.clear();
 }
 
 vector<TokenStruct> XMLParser::returnTokenizedInput() const
 {
-	return tokenizedInputVector;
+	return tokenizedInputVector; // return vector
 }
 
 // TODO: Implement the containsElementName method
 bool XMLParser::containsElementName(const std::string &inputString) const
 {
-	return false;
+	if(!tokenizedInputVector.size() && parseSuccess) return false; // if tokenized vector does not exist or xml string has not been parsed or is not valid, do not search for element name
+
+	return elementNameBag->contains(inputString); // use elementBag member function to check whether inputString is contained in elementNameBag
 }
 
 // TODO: Implement the frequencyElementName method
 int XMLParser::frequencyElementName(const std::string &inputString) const
 {
-	return -1;
+	if(!tokenizedInputVector.size() && parseSuccess) return false; // if tokenized vector does not exist or xml string has not been parsed or is not valid, do not search for element name
+
+	return elementNameBag->getFrequencyOf(inputString); // use elementNameBag built in member function to get frequency
 }
 
