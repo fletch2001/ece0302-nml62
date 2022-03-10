@@ -79,16 +79,6 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 			thisToken.tokenType = START_TAG; // set start tag otherwise
 		}
 
-		// CHECK FOR ILLEGAL CHARACTERS HERE
-		// for(unsigned i = 0; i < tokenizedInputVector.size(); i++) {
-		// if( tokenizedInputVector[i].tokenType == DECLARATION) {
-		// 	continue;
-		// }
-		// //['!','"','#','$','%','&','\'','(',')','*','+',',','/',';','<','=','>','?','@','[','\\',']','^','`','{','|','}','~','.']
-		// else if(!isalpha(tokenizedInputVector[i].tokenString[0]) || tokenizedInputVector[i].tokenString.find("!\"#$%&\'()*+,/;<=>?@[\\]^`{|}~", 0, 1) != -1) {
-		// 	return false;
-		// }
-
 		// find next end; the next > or space before a >
 		unsigned tempEnd = inputString.find(' ', 1);
 		if( tempEnd == -1 || tempEnd > nextEnd) tempEnd = nextEnd;
@@ -196,4 +186,3 @@ int XMLParser::frequencyElementName(const std::string &inputString) const
 
 	return elementNameBag->getFrequencyOf(inputString); // use elementNameBag built in member function to get frequency
 }
-
