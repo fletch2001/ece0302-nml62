@@ -50,10 +50,15 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 		if(inputString.find('<', 1) < nextEnd + 1) { this->clear(); return false; } // check for another < before the next >
 		if(inputString.find('>', nextEnd + 1) < nextStart) { this->clear(); return false; } // check for > before next <
 
+		//cout << inputString[1] << " " << inputString[nextEnd - 1] << endl;
+
+
 		// checking for declaration
 		if(inputString[1] == '?') { // check that char before next > is a ?
-			if( inputString[nextEnd - 1] == '?' )
+			if( inputString[nextEnd - 1] == '?' ){
 				thisToken.tokenType = DECLARATION; // set token type to declaration
+			//	cout << inputString << endl;
+			}
 			else { // not a valid declaration; clear class and return false
 				this->clear();
 				return false;
@@ -133,8 +138,21 @@ static std::string deleteAttributes(std::string input)
 // TODO: Implement the parseTokenizedInput method here
 bool XMLParser::parseTokenizedInput()
 {
-	if( !tokenizedInputVector.size() ) return false;
+	if( !tokenizedInputVector.size() ) {
+		this->clear();
+		return false;
+	}
 
+	for(unsigned i = 0; i < tokenizedInputVector.size(); i++) {
+		if(tokenizedInputVector[i].tokenType == END_TAG || tokenizedInputVector[i].tokenType == CONTENT || tokenizedInputVector[i].tokenType == EMPTY_TAG) {
+			this->clear();
+		//	cout << i << ": " << "1" << " " << tokenizedInputVector[i].tokenType << " " << tokenizedInputVector[i].tokenString << endl;
+			return false;
+		}
+		else if( tokenizedInputVector[i].tokenType == START_TAG ) {
+			break; // checks that there is a start tag enclosing next tags
+		} 
+	}
 
 	for(unsigned i = 0; i < tokenizedInputVector.size(); i++) {
 		if( tokenizedInputVector[i].tokenType == START_TAG ) {
@@ -142,6 +160,7 @@ bool XMLParser::parseTokenizedInput()
 		} else if( tokenizedInputVector[i].tokenType == END_TAG ) {
 			if( parseStack->peek() != tokenizedInputVector[i].tokenString ) {
 				this->clear(); // clear class
+			//	cout << "2" << endl;
 				return false; // if top of stack (last start tag read in) does not equal the first end tag seen, return false
 			}
 			else parseStack->pop(); // otherwise, remove start tag from stack
@@ -151,6 +170,11 @@ bool XMLParser::parseTokenizedInput()
 		} 
 	}
 
+	if(!parseStack->isEmpty()) {
+		this->clear();
+		return false; // case when there is an unmatched start tag
+	}
+
 	parseSuccess = 1; // if for loop does not return a false, tokenized vector has been successfully parsed. return true and set parse success flag to 1
 	return true;
 }
@@ -158,11 +182,8 @@ bool XMLParser::parseTokenizedInput()
 // TODO: Implement the clear method here
 void XMLParser::clear()
 {	
-	delete parseStack; // delete parseStack (also clears it)
-	parseStack = nullptr; // set nullptr to parseStack
-	
-	delete elementNameBag;
-	elementNameBag = nullptr; // set nullptr to elementNameBag
+	parseStack->clear(); // clear parseStack
+	elementNameBag->clear(); // clear elementNameBag
 	tokenizedInputVector.clear();
 }
 

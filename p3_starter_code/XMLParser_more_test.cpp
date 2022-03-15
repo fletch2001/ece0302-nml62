@@ -200,3 +200,32 @@ TEST_CASE( "Test XMLParser Final Handout-0", "[XMLParser]" )
 		REQUIRE(myXMLParser.containsElementName("color_swatch"));
 		REQUIRE(myXMLParser.frequencyElementName("color_swatch") == 15);
 }
+
+TEST_CASE("testing invalid strings") {
+	XMLParser x;
+	std::string inputString = "<test><test/>";
+	REQUIRE(x.tokenizeInputString(inputString));
+	REQUIRE_FALSE(x.parseTokenizedInput());
+
+	x.clear();
+
+	inputString = "</test>";
+	REQUIRE(x.tokenizeInputString(inputString));
+	REQUIRE_FALSE(x.parseTokenizedInput());
+
+	x.clear();
+
+	inputString = "<? decl ?><test><test1></test1></test>";
+	REQUIRE(x.tokenizeInputString(inputString));
+	REQUIRE(x.parseTokenizedInput());
+
+	x.clear();
+
+	inputString = "<? decl ?><test><test1></test></test1>";
+	REQUIRE(x.tokenizeInputString(inputString));
+	REQUIRE_FALSE(x.parseTokenizedInput());
+}
+
+TEST_CASE( "" ) {
+	
+}
