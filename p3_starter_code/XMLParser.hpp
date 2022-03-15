@@ -28,9 +28,6 @@ private:
 	Stack<std::string>* parseStack;
 	/** Vector to store the tokenized input string and the token types */
 	std::vector<TokenStruct> tokenizedInputVector;
-  
-	Stack<TokenStruct> *tokenStack; // stack of tokens
-
 	bool parseSuccess; // stores whether the current XML string has been successfully parsed. Resets to 0 any time tokenizeInputVector is called.
 
   // You can add or change the private fields.

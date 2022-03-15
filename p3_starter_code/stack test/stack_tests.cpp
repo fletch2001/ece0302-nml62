@@ -70,6 +70,19 @@ TEST_CASE( "isEmpty" ) {
 
 TEST_CASE( "peek" ) {
     Stack<int> s;
+    bool success;
+
+    try
+    {
+        s.peek();
+    }
+    catch(const std::exception& e)
+    {
+        success = true;
+    }
+    
+    REQUIRE(success);
+
     REQUIRE(s.push(1));
     REQUIRE(s.push(2));
 
