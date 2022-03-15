@@ -1,20 +1,18 @@
 #define CATCH_CONFIG_MAIN
+#include "Stack.hpp"
 #include "catch.hpp"
 
-#include "Stack.hpp"
-
-TEST_CASE( "test_push" ) {
+TEST_CASE("test_push") {
     Stack<int> s;
     REQUIRE(s.push(1));
     REQUIRE(s.push(2));
 
     REQUIRE(s.size() == 2);
-
 }
 
 // TEST_CASE( "test_pop" ) {
 //      Stack<int> s;
-    
+
 //     for(unsigned i = 0; i < 100; i++) {
 //         REQUIRE(s.push(i));
 //         REQUIRE(s.size() == i+1);
@@ -30,12 +28,12 @@ TEST_CASE( "test_push" ) {
 //     REQUIRE(s.isEmpty());
 // }
 
-TEST_CASE( "clear" ) {
+TEST_CASE("clear") {
     Stack<int> s;
-    
-    for(unsigned i = 0; i < 100; i++) {
+
+    for (unsigned i = 0; i < 100; i++) {
         REQUIRE(s.push(i));
-        REQUIRE(s.size() == i+1);
+        REQUIRE(s.size() == i + 1);
     }
 
     REQUIRE(s.peek() == 99);
@@ -44,13 +42,13 @@ TEST_CASE( "clear" ) {
 
     REQUIRE(s.isEmpty());
     REQUIRE(s.size() == 0);
-    //s.peek();
+    // s.peek();
 
-    //REQUIRE_THROWS(s.peek());
+    // REQUIRE_THROWS(s.peek());
 
     try {
         s.peek();
-    } catch(logic_error) {
+    } catch (logic_error) {
         REQUIRE(s.size() == 0);
     }
 }
@@ -59,7 +57,7 @@ TEST_CASE( "clear" ) {
 
 // }
 
-TEST_CASE( "isEmpty" ) {
+TEST_CASE("isEmpty") {
     Stack<int> s;
     REQUIRE(s.isEmpty());
     REQUIRE(s.push(100));
@@ -68,19 +66,16 @@ TEST_CASE( "isEmpty" ) {
     REQUIRE(s.isEmpty());
 }
 
-TEST_CASE( "peek" ) {
+TEST_CASE("peek") {
     Stack<int> s;
     bool success;
 
-    try
-    {
+    try {
         s.peek();
-    }
-    catch(const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         success = true;
     }
-    
+
     REQUIRE(success);
 
     REQUIRE(s.push(1));
@@ -92,7 +87,7 @@ TEST_CASE( "peek" ) {
 }
 
 TEST_CASE("testing DAM stack") {
-    Stack<int> *s = new Stack<int>;
+    Stack<int>* s = new Stack<int>;
     s->push(1);
 
     delete s;
