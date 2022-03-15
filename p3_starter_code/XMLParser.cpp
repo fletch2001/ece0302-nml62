@@ -5,8 +5,6 @@
 
 #include "XMLParser.hpp"
 
-#include <assert.h>
-
 #include <string>
 
 // TODO: Implement the constructor here
@@ -36,149 +34,130 @@ bool XMLParser::tokenizeInputString(const std::string &inputString) {
     unsigned nextStart;
 
     // cout << inputString << endl;
-     
+
     if (inputString.length() == 0) {
         return false;
     }  // base case
     else if (inputString[0] != '<' || inputString[inputString.length() - 1] != '>') {
+        this->clear();
+        return false;
+    }  // returns false if first and last char of string are not < and > (also
+       // include clear){
+
+    else {
+        if (inputString.find('>', 1) == -1) {
             this->clear();
             return false;
-        }  // returns false if first and last char of string are not < and > (also
-        // include clear){
-       
+        }  // return false and clear if can't find a next >
 
-       else {
-            if (inputString.find('>', 1) == -1) {
+        unsigned nextEnd = inputString.find('>', 1);  // find next > in string
+                                                      // unsigned nextStart;
+        unsigned start_index = 0;                     // int to offset loop start
+        unsigned end_index = 0;                       // int to offset loop end
+
+        TokenStruct thisToken;  // temp token struct to fill up
+
+        std::string elementStr;
+
+        if (inputString.find('<', nextEnd) == -1) {
+            nextStart = nextEnd + 1;
+        }  // only return false if can't find another start tag AND the next tag
+        // is not an end tag
+        else {
+            nextStart = inputString.find('<', nextEnd);
+        }
+
+        if (inputString.find('<', 1) < nextEnd + 1) {
+            this->clear();
+            return false;
+        }  // check for another < before the next >
+        if (inputString.find('>', nextEnd + 1) < nextStart) {
+            this->clear();
+            return false;
+        }  // check for > before next <
+
+        // cout << inputString[1] << " " << inputString[nextEnd - 1] << endl;
+
+        // checking for declaration
+        if (inputString[1] == '?') {  // check that char before next > is a ?
+            if (inputString[nextEnd - 1] == '?') {
+                thisToken.tokenType =
+                    DECLARATION;  // set token type to declaration
+                //	cout << inputString << endl;
+            } else {  // not a valid declaration; clear class and return false
                 this->clear();
                 return false;
-            }  // return false and clear if can't find a next >
-
-            unsigned nextEnd = inputString.find('>', 1);  // find next > in string
-                                                          // unsigned nextStart;
-            unsigned start_index = 0;                     // int to offset loop start
-            unsigned end_index = 0;                       // int to offset loop end
-
-            TokenStruct thisToken;  // temp token struct to fill up
-
-            std::string elementStr;
-
-            if (inputString.find('<', nextEnd) == -1) {
-                nextStart = nextEnd + 1;
-            }  // only return false if can't find another start tag AND the next tag
-            // is not an end tag
-            else {
-                nextStart = inputString.find('<', nextEnd);
             }
 
-            if (inputString.find('<', 1) < nextEnd + 1) {
-                this->clear();
-                return false;
-            }  // check for another < before the next >
-            if (inputString.find('>', nextEnd + 1) < nextStart) {
-                this->clear();
-                return false;
-            }  // check for > before next <
-
-            // cout << inputString[1] << " " << inputString[nextEnd - 1] << endl;
-
-            // checking for declaration
-            if (inputString[1] == '?') {  // check that char before next > is a ?
-                if (inputString[nextEnd - 1] == '?') {
-                    thisToken.tokenType =
-                        DECLARATION;  // set token type to declaration
-                    //	cout << inputString << endl;
-                } else {  // not a valid declaration; clear class and return false
-                    this->clear();
-                    return false;
-                }
-
-                for (unsigned i = 2; i < nextEnd - 1; i++) {
-                    elementStr += inputString[i];  // append character in
-                                                   // declaration to elementStr
-                }
-
-                thisToken.tokenString = elementStr;         // set token string
-                tokenizedInputVector.push_back(thisToken);  // push token to vector
-
-                //tokenizeInputString(inputString.substr(
-                //    nextStart));  // recursively call tokenize string input with a
-                                  // substring of input string starting at the next
-                                  // <
-               if(inputString.substr(nextStart) == "") return true;
-                else return tokenizeInputString(inputString.substr(nextStart));  // call tokenizeInputString again on substring starting with next < or return false if at end of string
-            }
-            // check for empty tag
-            else if (inputString[nextEnd - 1] == '/') {  // type is empty tag
-                thisToken.tokenType = EMPTY_TAG;         // set tag typee
-                end_index = 1;                           // set loop end offset to 1
-            } else if (inputString[1] == '/') {          // checking for closing tag
-                thisToken.tokenType = END_TAG;           // set end tag
-                start_index = 1;                         // set loop start offset to 1
-            } else {
-                thisToken.tokenType = START_TAG;  // set start tag otherwise
+            for (unsigned i = 2; i < nextEnd - 1; i++) {
+                elementStr += inputString[i];  // append character in
+                                               // declaration to elementStr
             }
 
-            // find next end; the next > or space before a >
-            unsigned tempEnd = inputString.find(' ', 1);
-            if (tempEnd == -1 || tempEnd > nextEnd)
-                tempEnd = nextEnd;
-            else if (thisToken.tokenType == END_TAG && tempEnd != -1) {
-                // cout << inputString << "\n"
-                //      << tempEnd << endl;
-                // cout << "ill" << endl;
-                this->clear();  // clear structure
-                return false;   // there is a space before the > in an end tag, which
-                                // is illegal
-            }
-
-            for (unsigned i = 1 + start_index; i < tempEnd - end_index; i++) {
-                // if (i - (1 + start_index) == 0 && !isalpha(inputString[i]) ||
-                //     inputString[i] >= 33 && inputString[i] <= 44 ||
-                //     inputString[i] == 46 || inputString[i] == 47 ||
-                //     inputString[i] >= 58 && inputString[i] <= 64 ||
-                //     inputString[i] >= 91 && inputString[i] <= 94 ||
-                //     inputString[i] == 96 ||
-                //     inputString[i] >= 123 && inputString[i] <= 126) {
-                    
-                //     cout << "ILLL" << endl << endl;
-                    
-                //     this->clear();  // illegal character; clear structure and return
-                //                     // false
-                //     return false;
-                // }
-
-                elementStr += inputString[i];  // append tag char to element string
-            }
-
-            if (thisToken.tokenType != END_TAG)
-                elementNameBag->add(elementStr);  // add element name to bag
-            thisToken.tokenString = elementStr;   // set token string
-
+            thisToken.tokenString = elementStr;         // set token string
             tokenizedInputVector.push_back(thisToken);  // push token to vector
 
-            elementStr.clear();  // clear elementStr
+            // recursively call tokenize string input with a
+            // substring of input string starting at the next
+            // <
+            if (inputString.substr(nextStart) == "")
+                return true;
+            else
+                return tokenizeInputString(inputString.substr(nextStart));  // call tokenizeInputString again on substring starting with next < or return false if at end of string
+        }
+        // check for empty tag
+        else if (inputString[nextEnd - 1] == '/') {  // type is empty tag
+            thisToken.tokenType = EMPTY_TAG;         // set tag typee
+            end_index = 1;                           // set loop end offset to 1
+        } else if (inputString[1] == '/') {          // checking for closing tag
+            thisToken.tokenType = END_TAG;           // set end tag
+            start_index = 1;                         // set loop start offset to 1
+        } else {
+            thisToken.tokenType = START_TAG;  // set start tag otherwise
+        }
 
-            // read in any content
-            elementStr = inputString.substr(nextEnd + 1, nextStart - nextEnd - 1);
+        // find next end; the next > or space before a >
+        // if a space is found in an end tag, return false
+        unsigned tempEnd = inputString.find(' ', 1);
+        if (tempEnd == -1 || tempEnd > nextEnd)
+            tempEnd = nextEnd;
+        else if (thisToken.tokenType == END_TAG && tempEnd != -1) {
+            this->clear();  // clear structure
+            return false;   // there is a space before the > in an end tag, which
+                            // is illegal
+        }
 
-            if (elementStr.find_first_not_of(" ") == -1)
-                elementStr.clear();  // clear string if string is all whitespace
+        // adding each character between <> or < /> or </ > to token string
+        for (unsigned i = 1 + start_index; i < tempEnd - end_index; i++) {
+            elementStr += inputString[i];  // append tag char to element string
+        }
 
-            // add content to content token
-            if (elementStr.length() > 0) {
-                tokenizedInputVector.push_back(
-                    TokenStruct{StringTokenType::CONTENT, std::string(elementStr)});
-            }
+        if (thisToken.tokenType != END_TAG)
+            elementNameBag->add(elementStr);  // add element name to bag
+        thisToken.tokenString = elementStr;   // set token string
 
-            if(inputString.substr(nextStart) == "") return true;
-            else return tokenizeInputString(inputString.substr(nextStart));
-            // call tokenizeInputString again on substring starting with next < or return false if at end of string
-       }
-    
+        tokenizedInputVector.push_back(thisToken);  // push token to vector
 
-    // TODO: push all successsful tokens to stack instead and then pop from stack into vector for return
+        elementStr.clear();  // clear elementStr
 
-    // return false;
+        // read in any content
+        elementStr = inputString.substr(nextEnd + 1, nextStart - nextEnd - 1);
+
+        if (elementStr.find_first_not_of(" ") == -1)
+            elementStr.clear();  // clear string if string is all whitespace
+
+        // add content to content token
+        if (elementStr.length() > 0) {
+            tokenizedInputVector.push_back(
+                TokenStruct{StringTokenType::CONTENT, std::string(elementStr)});
+        }
+
+        // call tokenizeInputString again on substring starting with next < or return false if at end of string
+        if (inputString.substr(nextStart) == "")
+            return true;
+        else
+            return tokenizeInputString(inputString.substr(nextStart));
+    }
 }  // end
 
 // TODO: Implement a helper function to delete attributes from a START_TAG
@@ -207,30 +186,26 @@ bool XMLParser::parseTokenizedInput() {
     }
 
     for (unsigned i = 0; i < tokenizedInputVector.size(); i++) {
-        
         string tokenStr = tokenizedInputVector[i].tokenString;
 
-        if(tokenizedInputVector[i].tokenType != DECLARATION && tokenizedInputVector[i].tokenType != CONTENT) {
-
-            //illegal character checking
-            for(unsigned j = 0; j < tokenStr.length(); j++) {
-                if(     j == 0 && !isalpha(tokenStr[j]) || 
-                        tokenStr[j] >= 33 && tokenStr[j] <= 44 || 
-                        tokenStr[j] == 47 ||
-                        tokenStr[j] >= 59 && tokenStr[j] <= 64 ||
-                        tokenStr[j] >= 91 && tokenStr[j] <= 94 ||
-                        tokenStr[j] == 96 ||
-                        tokenStr[j] >= 123 && tokenStr[j] <= 126) {
-
-
+        if (tokenizedInputVector[i].tokenType != DECLARATION && tokenizedInputVector[i].tokenType != CONTENT) {
+            // illegal character checking -- check each character in teach token string which isnt a declaration or content token. return false if illegal char is found
+            for (unsigned j = 0; j < tokenStr.length(); j++) {
+                if (j == 0 && !isalpha(tokenStr[j]) ||
+                    tokenStr[j] >= 33 && tokenStr[j] <= 44 ||
+                    tokenStr[j] == 47 ||
+                    tokenStr[j] >= 59 && tokenStr[j] <= 64 ||
+                    tokenStr[j] >= 91 && tokenStr[j] <= 94 ||
+                    tokenStr[j] == 96 ||
+                    tokenStr[j] >= 123 && tokenStr[j] <= 126) {
                     // cout << tokenStr[j] << endl;
                     this->clear();
                     return false;
-
                 }
             }
         }
 
+        // BPG checking
         if (tokenizedInputVector[i].tokenType == START_TAG) {
             parseStack->push(
                 tokenizedInputVector[i].tokenString);  // push start tag name
