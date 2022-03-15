@@ -30,6 +30,8 @@ XMLParser::~XMLParser() {
 // TODO: Implement the tokenizeInputString method
 bool XMLParser::tokenizeInputString(const std::string &inputString) {
     parseSuccess = 0;  // force parseSuccess to 0
+    unsigned nextStart;
+
 
     // cout << inputString << endl;
     if (inputString.length() == 0) {
@@ -48,7 +50,7 @@ bool XMLParser::tokenizeInputString(const std::string &inputString) {
         }  // return false and clear if can't find a next >
 
         unsigned nextEnd = inputString.find('>', 1);  // find next > in string
-        unsigned nextStart;
+       // unsigned nextStart;
         unsigned start_index = 0;  // int to offset loop start
         unsigned end_index = 0;    // int to offset loop end
 
@@ -114,7 +116,9 @@ bool XMLParser::tokenizeInputString(const std::string &inputString) {
         unsigned tempEnd = inputString.find(' ', 1);
         if (tempEnd == -1 || tempEnd > nextEnd)
             tempEnd = nextEnd;
-        else if (thisToken.tokenType == END_TAG && tempEnd > nextEnd) {
+        else if (thisToken.tokenType == END_TAG && tempEnd != -1) {
+            cout << inputString << "\n" << tempEnd << endl;
+            cout << "ill" << endl;
             this->clear();  // clear structure
             return false;  // there is a space before the > in an end tag, which
                            // is illegal
@@ -157,12 +161,15 @@ bool XMLParser::tokenizeInputString(const std::string &inputString) {
         }
 
         // call tokenizeInputString again on substring starting with next <
-        tokenizeInputString(inputString.substr(nextStart));
-
-        return true;
+        return tokenizeInputString(inputString.substr(nextStart));
     }
 
-    return false;
+        // TODO: push all successsful tokens to stack instead and then pop from stack into vector for return
+
+    return true;
+    
+
+    //return false;
 }  // end
 
 // TODO: Implement a helper function to delete attributes from a START_TAG

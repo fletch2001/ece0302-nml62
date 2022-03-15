@@ -226,6 +226,91 @@ TEST_CASE("testing invalid strings") {
 	REQUIRE_FALSE(x.parseTokenizedInput());
 }
 
-TEST_CASE( "" ) {
+TEST_CASE("empty string") {
+	XMLParser x;
+	string inputString = "";
+	bool success;
+
+	success = x.tokenizeInputString(inputString);
+	REQUIRE(!success);
+
+	success = x.parseTokenizedInput();
+	REQUIRE(!success);
+}
+
+TEST_CASE("testing search and getqty for empty strings") {
+	XMLParser x;
+	string inputString = "";
+	bool success;
+
+	success = x.tokenizeInputString(inputString);
+	REQUIRE(!success);
+
+	success = x.parseTokenizedInput();
+	REQUIRE(!success);
+
+	success = x.containsElementName("");
+	REQUIRE(!success);
+
+	success = x.frequencyElementName("");
+	REQUIRE(!success);
+}
+
+TEST_CASE("testing search and getqty for valid strings") {
+	XMLParser x;
+	string inputString = "<?declaration?><xml><s1></s1></xml>";
+	bool success;
+
+	success = x.tokenizeInputString(inputString);
+	REQUIRE(success);
+
+	success = x.parseTokenizedInput();
+	REQUIRE(success);
+
+	success = x.containsElementName("s1");
+	REQUIRE(success);
+
+	success = x.containsElementName("xml");
+	REQUIRE(success);
+
+	int freq = x.frequencyElementName("xml");
+	REQUIRE(freq == 1);
+
+	freq = x.frequencyElementName("s1");
+	REQUIRE(freq == 1);
+}
+
+TEST_CASE("testing search and getqty for invalid strings") {
+	XMLParser x;
+	vector<string> inputStrings = {"<?declaration?><xml><s1></s1><xml>","<?declaration?><xml><s1></s1><xml/>"};
 	
+	for(int i = 0; i < inputStrings.size(); i++) {
+	
+		bool success;
+
+		success = x.tokenizeInputString(inputStrings[i]);
+		REQUIRE(success);
+
+		success = x.parseTokenizedInput();
+		REQUIRE(!success);
+
+		success = x.containsElementName("s1");
+		REQUIRE(!success);
+
+		success = x.containsElementName("xml");
+		REQUIRE(!success);
+
+		int freq = x.frequencyElementName("xml");
+		REQUIRE(freq == 0);
+
+		freq = x.frequencyElementName("s1");
+		REQUIRE(freq == 0);
+	}
+}
+
+TEST_CASE("invalid tag name") {
+	string inputString = "<pro duct></pro duct>";
+	XMLParser x;
+	REQUIRE(!x.tokenizeInputString(inputString));
+
 }
