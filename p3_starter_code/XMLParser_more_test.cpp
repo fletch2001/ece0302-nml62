@@ -41,6 +41,98 @@ TEST_CASE( "Test Stack push", "[XMLParser]" )
 		}
 }
 
+TEST_CASE("test_push") {
+    Stack<int> s;
+    REQUIRE(s.push(1));
+    REQUIRE(s.push(2));
+
+    REQUIRE(s.size() == 2);
+}
+
+// TEST_CASE( "test_pop" ) {
+//      Stack<int> s;
+
+//     for(unsigned i = 0; i < 100; i++) {
+//         REQUIRE(s.push(i));
+//         REQUIRE(s.size() == i+1);
+//     }
+
+//     REQUIRE(!s.isEmpty());
+
+//     for(unsigned i = 100; i > 1; i--) {
+//         REQUIRE(s.pop());
+//         REQUIRE(s.size() == i - 1);
+//     }
+
+//     REQUIRE(s.isEmpty());
+// }
+
+TEST_CASE("clear") {
+    Stack<int> s;
+
+    for (unsigned i = 0; i < 100; i++) {
+        REQUIRE(s.push(i));
+        REQUIRE(s.size() == i + 1);
+    }
+
+    REQUIRE(s.peek() == 99);
+
+    s.clear();
+
+    REQUIRE(s.isEmpty());
+    REQUIRE(s.size() == 0);
+    // s.peek();
+
+    // REQUIRE_THROWS(s.peek());
+
+    try {
+        s.peek();
+    } catch (logic_error) {
+        REQUIRE(s.size() == 0);
+    }
+}
+
+// TEST_CASE( "size" ) {
+
+// }
+
+TEST_CASE("isEmpty") {
+    Stack<int> s;
+    REQUIRE(s.isEmpty());
+    REQUIRE(s.push(100));
+    REQUIRE(!s.isEmpty());
+    REQUIRE(s.pop());
+    REQUIRE(s.isEmpty());
+}
+
+TEST_CASE("peek") {
+    Stack<int> s;
+    bool success;
+
+    try {
+        s.peek();
+    } catch (const std::exception& e) {
+        success = true;
+    }
+
+    REQUIRE(success);
+
+    REQUIRE(s.push(1));
+    REQUIRE(s.push(2));
+
+    REQUIRE(s.peek() == 2);
+    REQUIRE(s.pop());
+    REQUIRE(s.peek() == 1);
+}
+
+TEST_CASE("testing DAM stack") {
+    Stack<int>* s = new Stack<int>;
+    s->push(1);
+
+    delete s;
+    s = nullptr;
+}
+
 TEST_CASE( "Test XMLParser tokenizeInputString", "[XMLParser]" )
 {
 	   INFO("Hint: tokenize single element test of XMLParse");
@@ -201,6 +293,56 @@ TEST_CASE( "Test XMLParser Final Handout-0", "[XMLParser]" )
 		REQUIRE(myXMLParser.frequencyElementName("color_swatch") == 15);
 }
 
+TEST_CASE("illegal characters") {
+	XMLParser x;
+	vector<int> ill_chars = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 47, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 96, 123, 124, 125, 126};
+	vector<int> nums = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57};
+
+	for(unsigned i = 0; i < ill_chars.size(); i++) {
+		string insert_char;
+		insert_char = (char)ill_chars[i];
+		string inputString = "<t><ab"+insert_char+"/></t>";
+		cout << inputString << endl;
+		x.tokenizeInputString(inputString);
+		//REQUIRE(success);
+		bool success = x.parseTokenizedInput();
+		REQUIRE(!success);
+	}
+
+	for(unsigned i = 0; i < nums.size(); i++) {
+		string insert_char;
+		insert_char = (char)nums[i];
+		string inputString = "<t><ab"+insert_char+"/></t>";
+		//cout << inputString << endl;
+		x.tokenizeInputString(inputString);
+		//REQUIRE(success);
+		bool success = x.parseTokenizedInput();
+		REQUIRE(success);
+	}
+
+	for(unsigned i = 0; i < ill_chars.size(); i++) {
+		string insert_char;
+		insert_char = (char)ill_chars[i];
+		string inputString = "<t><"+insert_char+"ab/></t>";
+		//cout << inputString << endl;
+		x.tokenizeInputString(inputString);
+		//REQUIRE(success);
+		bool success = x.parseTokenizedInput();
+		REQUIRE(!success);
+	}
+
+	for(unsigned i = 0; i < nums.size(); i++) {
+		string insert_char;
+		insert_char = (char)nums[i];
+		string inputString = "<t><"+insert_char+"ab/></t>";
+		//cout << inputString << endl;
+		x.tokenizeInputString(inputString);
+		//REQUIRE(success);
+		bool success = x.parseTokenizedInput();
+		REQUIRE(!success);
+	}
+}
+
 TEST_CASE("testing invalid strings") {
 	XMLParser x;
 	std::string inputString = "<test><test/>";
@@ -226,6 +368,91 @@ TEST_CASE("testing invalid strings") {
 	REQUIRE_FALSE(x.parseTokenizedInput());
 }
 
-TEST_CASE( "" ) {
+TEST_CASE("empty string") {
+	XMLParser x;
+	string inputString = "";
+	bool success;
+
+	success = x.tokenizeInputString(inputString);
+	REQUIRE(!success);
+
+	success = x.parseTokenizedInput();
+	REQUIRE(!success);
+}
+
+TEST_CASE("testing search and getqty for empty strings") {
+	XMLParser x;
+	string inputString = "";
+	bool success;
+
+	success = x.tokenizeInputString(inputString);
+	REQUIRE(!success);
+
+	success = x.parseTokenizedInput();
+	REQUIRE(!success);
+
+	success = x.containsElementName("");
+	REQUIRE(!success);
+
+	success = x.frequencyElementName("");
+	REQUIRE(!success);
+}
+
+TEST_CASE("testing search and getqty for valid strings") {
+	XMLParser x;
+	string inputString = "<?declaration?><xml><s1></s1></xml>";
+	bool success;
+
+	success = x.tokenizeInputString(inputString);
+	REQUIRE(success);
+
+	success = x.parseTokenizedInput();
+	REQUIRE(success);
+
+	success = x.containsElementName("s1");
+	REQUIRE(success);
+
+	success = x.containsElementName("xml");
+	REQUIRE(success);
+
+	int freq = x.frequencyElementName("xml");
+	REQUIRE(freq == 1);
+
+	freq = x.frequencyElementName("s1");
+	REQUIRE(freq == 1);
+}
+
+TEST_CASE("testing search and getqty for invalid strings") {
+	XMLParser x;
+	vector<string> inputStrings = {"<?declaration?><xml><s1></s1><xml>","<?declaration?><xml><s1></s1><xml/>"};
 	
+	for(int i = 0; i < inputStrings.size(); i++) {
+	
+		bool success;
+
+		success = x.tokenizeInputString(inputStrings[i]);
+		REQUIRE(success);
+
+		success = x.parseTokenizedInput();
+		REQUIRE(!success);
+
+		success = x.containsElementName("s1");
+		REQUIRE(!success);
+
+		success = x.containsElementName("xml");
+		REQUIRE(!success);
+
+		int freq = x.frequencyElementName("xml");
+		REQUIRE(freq == 0);
+
+		freq = x.frequencyElementName("s1");
+		REQUIRE(freq == 0);
+	}
+}
+
+TEST_CASE("invalid tag name") {
+	string inputString = "<pro duct></pro duct>";
+	XMLParser x;
+	REQUIRE(!x.tokenizeInputString(inputString));
+
 }
