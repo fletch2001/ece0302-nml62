@@ -103,9 +103,9 @@ void DynamicArrayList<T>::insert(std::size_t position, const T& item) {
         data[position] = item;  // set item
         size++;                 // increase size
     } else {
-        T* temp = new T[size++];
+        T* temp = new T[capacity];
 
-        for (unsigned i = 0, os = 0; i < size; i++) {
+        for (unsigned i = 0, os = 0; i < capacity; i++) {
             if (i == position) {
                 ++os;            // set offset to 1
                 temp[i] = item;  // set item
@@ -127,8 +127,8 @@ void DynamicArrayList<T>::remove(std::size_t position) {
         data[position] = 0;
         size--;
     } else {
-        T* temp = new T[size - 1];
-        for (int i = 0, os = 0; i < size; i++) {
+        T* temp = new T[capacity];
+        for (int i = 0, os = 0; i < capacity; i++) {
             if (i == position) {
                 --os; // decrement offset
                 continue;
