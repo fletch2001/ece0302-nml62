@@ -37,6 +37,10 @@ TEST_CASE("Testing 1", "[queue]") {
   REQUIRE_FALSE(queue.isEmpty());
   REQUIRE(queue.peekFront() == 241);
 
+  // queue.dequeue();
+  // REQUIRE_FALSE(queue.isEmpty());
+  // REQUIRE(queue.peekFront() == 45);
+
   Queue<int, DynamicArrayList<int>> another_queue;
   another_queue = queue;
 

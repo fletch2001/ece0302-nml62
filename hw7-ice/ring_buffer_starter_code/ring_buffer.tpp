@@ -12,13 +12,18 @@ RingBuffer<T>::RingBuffer(std::size_t size)
   count = 0;
 }
 
-/**
 template <typename T>
-bool RingBuffer<T>::enqueue_back(const T& item)
+bool RingBuffer<T>::enqueue_front(const T& item)
 {
-  // TODO
+  if(count != queueLength) {
+    front = (front - 1) % queueLength; // set new front of queue
+    data[front] = item; // set item to new front position
+    ++count; // increase count of items
+    return true;
+  }
+
+  return false;
 }
-*/
 
 template <typename T>
 bool RingBuffer<T>::enqueue_back(const T& item)
@@ -47,13 +52,18 @@ T RingBuffer<T>::dequeue_front()
   return value;
 }
 
-/**
+
 template <typename T>
-T RingBuffer<T>::dequeue_front()
+T RingBuffer<T>::dequeue_back()
 {
-  // TODO
+  assert(count > 0);
+
+  T value = data[back];
+  back = (back - 1) % queueLength;
+  --count;
+  
+  return value;
 }
-*/
 
 template <typename T>
 long int RingBuffer<T>::getCount()

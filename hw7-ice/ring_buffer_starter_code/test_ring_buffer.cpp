@@ -20,4 +20,13 @@ TEST_CASE("Test 1", "[ring_buffer]") {
   REQUIRE(buff.dequeue_front() == 3);
   REQUIRE(buff.getCount() == 0);
 
+  REQUIRE(buff.enqueue_front(3));
+  REQUIRE(buff.enqueue_front(2));
+  REQUIRE(buff.enqueue_front(1));
+  REQUIRE_FALSE(buff.enqueue_front(0));
+  
+  REQUIRE(buff.dequeue_back() == 3);
+  REQUIRE(buff.dequeue_back() == 2);
+  REQUIRE(buff.dequeue_back() == 1);
+  REQUIRE(buff.getCount() == 0);
 }
