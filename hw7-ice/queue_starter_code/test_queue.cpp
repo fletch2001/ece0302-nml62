@@ -22,6 +22,7 @@ TEST_CASE("Testing 1", "[queue]") {
   REQUIRE(queue.peekFront() == 12);
 
   queue.dequeue();
+
   queue.dequeue();
   REQUIRE(queue.isEmpty());
 
@@ -40,9 +41,9 @@ TEST_CASE("Testing 1", "[queue]") {
   // queue.dequeue();
   // REQUIRE_FALSE(queue.isEmpty());
   // REQUIRE(queue.peekFront() == 45);
+  Queue<int, DynamicArrayList<int>> another_queue(queue);
+  //another_queue = queue;
 
-  Queue<int, DynamicArrayList<int>> another_queue;
-  another_queue = queue;
 
   REQUIRE_FALSE(another_queue.isEmpty());
   REQUIRE(another_queue.peekFront() == 241);
@@ -50,4 +51,7 @@ TEST_CASE("Testing 1", "[queue]") {
   REQUIRE(another_queue.peekFront() == 45);
   another_queue.dequeue();
   REQUIRE(another_queue.peekFront() == 62);
+  another_queue.dequeue();
+
+  REQUIRE(another_queue.isEmpty());
 }

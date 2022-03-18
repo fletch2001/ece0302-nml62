@@ -33,11 +33,19 @@ DynamicArrayList<T>::~DynamicArrayList() {
 
 template <typename T>
 DynamicArrayList<T>& DynamicArrayList<T>::operator=(DynamicArrayList<T> x) {
+<<<<<<< HEAD
     size = x.getLength();
     capacity = this->size;
     data = new T[this->size];
 
     for(unsigned i = 0; i < this->size; i++) {
+=======
+    this->size = x.getLength();
+    this->capacity = x.getLength();
+    data = new T[this->size];
+
+    for(unsigned i = 0; i < this->size - 1; i++) {
+>>>>>>> 212accf2a198a5c955312874892080cc6a583dde
       data[i] = x.getEntry(i);
     }
     return *this;
