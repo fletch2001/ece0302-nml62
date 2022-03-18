@@ -33,19 +33,11 @@ DynamicArrayList<T>::~DynamicArrayList() {
 
 template <typename T>
 DynamicArrayList<T>& DynamicArrayList<T>::operator=(DynamicArrayList<T> x) {
-<<<<<<< HEAD
-    size = x.getLength();
-    capacity = this->size;
-    data = new T[this->size];
-
-    for(unsigned i = 0; i < this->size; i++) {
-=======
     this->size = x.getLength();
     this->capacity = x.getLength();
     data = new T[this->size];
 
     for(unsigned i = 0; i < this->size - 1; i++) {
->>>>>>> 212accf2a198a5c955312874892080cc6a583dde
       data[i] = x.getEntry(i);
     }
     return *this;
@@ -88,22 +80,22 @@ void DynamicArrayList<T>::insert(std::size_t position, const T& item) {
 
     if (size + 1 > capacity) {
         capacity += 10;  // increase capacity
-        // DynamicArrayList<T>* temp = new DynamicArrayList<T>(*this);
+        DynamicArrayList<T>* temp = new DynamicArrayList<T>(*this);
 
-        // delete this;
+        delete this;
 
-        // *this = *temp;  // set new object to this
-        // temp = nullptr;
+        *this = *temp;  // set new object to this
+        temp = nullptr;
 
         // reallocate array to new capacity
-        T* temp = new T[capacity];
-        for (unsigned i = 0; i < size; i++) {
-            temp[i] = data[i];
-        }
+        // T* temp = new T[capacity];
+        // for (unsigned i = 0; i < size; i++) {
+        //     temp[i] = data[i];
+        // }
 
-        delete[] data;
-        data = temp;
-        temp = nullptr;
+        // delete[] data;
+        // data = temp;
+        // temp = nullptr;
     }
 
     if (position == size) {
