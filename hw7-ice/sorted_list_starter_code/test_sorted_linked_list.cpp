@@ -193,3 +193,29 @@ TEST_CASE("Testing exceptions", "[sorted linked list]") {
   CHECK_THROWS_AS(lst.removeAt(-1), std::range_error);
   CHECK_THROWS_AS(lst.getEntry(-1), std::range_error);
 }
+
+TEST_CASE("Testing getPosition") {
+  ListType lst;
+
+  lst.insert('a');
+  lst.insert('b');
+
+  REQUIRE(lst.getPosition('c') == 2);
+
+  lst.insert('c');
+
+  REQUIRE(lst.getPosition('e') == 3);
+  lst.insert('e');
+  
+  REQUIRE(lst.getPosition('d') == 3);
+  lst.insert('d');
+  
+  REQUIRE(lst.getPosition('d') == 3);
+  REQUIRE(lst.getPosition('e') == 4);
+  REQUIRE(lst.getPosition('a') == 0);
+  REQUIRE(lst.getPosition('z') == 5);
+
+  lst.insert('a');
+  REQUIRE(lst.getPosition('a') == 0);
+  REQUIRE(lst.getPosition('b') == 2);
+}

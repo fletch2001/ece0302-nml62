@@ -48,8 +48,7 @@ public:
   long int getPosition(const T& newValue);
 
 private:
-  // LinkedList<T> * list; // linked list
-  // TODO
+   //NONE
 
 };
 
