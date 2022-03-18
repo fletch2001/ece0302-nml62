@@ -28,7 +28,7 @@ DynamicArrayList<T>::~DynamicArrayList() {
 
     delete[] data; // delete data
     data = nullptr; // nullptr to data
-    
+
 }
 
 template <typename T>
@@ -96,6 +96,7 @@ void DynamicArrayList<T>::insert(std::size_t position, const T& item) {
 
         delete[] data;
         data = temp;
+        temp = nullptr;
     }
 
     if (position == size) {
@@ -114,7 +115,6 @@ void DynamicArrayList<T>::insert(std::size_t position, const T& item) {
 
         delete[] data;
         data = temp;
-
         temp = nullptr;
     }
 }
