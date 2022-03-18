@@ -33,15 +33,13 @@ DynamicArrayList<T>::~DynamicArrayList() {
 
 template <typename T>
 DynamicArrayList<T>& DynamicArrayList<T>::operator=(DynamicArrayList<T> x) {
-    this->size = x.getLength();           // copy size
-    this->capacity = 10 + this->size;
-    // while(this->capacity < this->size) this->capacity+=10; // set capacity
-    this->data = new T[capacity];  // new data array
+    size = x.getLength();
+    capacity = this->size;
+    data = new T[this->size];
 
-    for (unsigned i = 0; i < this->size; i++) {
-        this->data[i] = x.getEntry(i);  // copy data
+    for(unsigned i = 0; i < this->size; i++) {
+      data[i] = x.getEntry(i);
     }
-
     return *this;
 }
 
@@ -129,7 +127,7 @@ void DynamicArrayList<T>::remove(std::size_t position) {
         size--;
     } else {
         T* temp = new T[capacity];
-        for (int i = 0, os = 0; i < capacity; i++) {
+        for (int i = 0, os = 0; i < size; i++) {
             if (i == position) {
                 --os; // decrement offset
                 continue;
