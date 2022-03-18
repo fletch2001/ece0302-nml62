@@ -105,7 +105,7 @@ void DynamicArrayList<T>::insert(std::size_t position, const T& item) {
     } else {
         T* temp = new T[size++];
 
-        for (unsigned i = 0, os = 0; i < size - 1; i++) {
+        for (unsigned i = 0, os = 0; i < size; i++) {
             if (i == position) {
                 ++os;            // set offset to 1
                 temp[i] = item;  // set item
