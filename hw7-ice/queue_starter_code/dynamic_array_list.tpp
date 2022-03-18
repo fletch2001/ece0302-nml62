@@ -34,7 +34,8 @@ DynamicArrayList<T>::~DynamicArrayList() {
 template <typename T>
 DynamicArrayList<T>& DynamicArrayList<T>::operator=(DynamicArrayList<T> x) {
     this->size = x.getLength();           // copy size
-    this->capacity = 10 + this->size / 10;   // copy capacity
+    this->capacity = 10 + this->size;
+    // while(this->capacity < this->size) this->capacity+=10; // set capacity
     this->data = new T[capacity];  // new data array
 
     for (unsigned i = 0; i < this->size; i++) {
