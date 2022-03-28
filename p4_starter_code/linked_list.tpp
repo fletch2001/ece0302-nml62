@@ -3,7 +3,8 @@
 template <typename T>
 LinkedList<T>::LinkedList()
 {
-  //TODO
+  length = 0; // initialize length
+  head = nullptr;
 }
 
 template <typename T>
@@ -34,22 +35,33 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& x)
 template <typename T>
 bool LinkedList<T>::isEmpty() const
 {
-  //TODO
-  return true;
+  return (length == 0); // return true if length = 0
 }
 
 template <typename T>
 std::size_t LinkedList<T>::getLength() const
 {
-  //TODO
-  return 0;
+  return length; // return length
 }
 
 template <typename T>
 bool LinkedList<T>::insert(std::size_t position, const T& item)
 {
-  //TODO
-  return true;
+  if(length == 0 && position == 1) { // insert first node
+    head = new Node<T>(item); // make new node
+    length++; // increase length
+    return true; // return true
+  } else if(length == 0) {
+    return false; // can't add in other positions if length == 0
+  } else if(position <= length + 1) {
+    Node<T> *nextNode = head;
+    for(unsigned i = 0; i < position; i++) {
+      nextNode = nextNode->getNext();
+    }
+    nextNode->setNext(new Node<T>(item)); // insert new node at end of list
+    length++; // increase length
+    return true;
+  } else return false; // otherwise return false
 }
 
 template <typename T>
