@@ -3,7 +3,6 @@
 template <typename T>
 LinkedList<T>::LinkedList() : head(nullptr), length(0)
 {
-  //TODO
 }
 
 template <typename T>
@@ -15,20 +14,35 @@ LinkedList<T>::~LinkedList()
 template <typename T>
 LinkedList<T>::LinkedList(const LinkedList<T>& x)
 {
-  //TODO
+  this->length = x.length;
+  this->head = new Node<T>(x.head->getItem());
+  Node<T> *temp = x.head->getNext();
+  Node<T> *thisNext = head;
+  while(temp != nullptr) {
+    thisNext->setNext(new Node<T>(temp->getItem()));
+    thisNext = thisNext->getNext();
+    temp = temp->getNext();
+  }
+  temp = nullptr;
+  thisNext = nullptr;
 }
 
 template <typename T>
 void LinkedList<T>::swap(LinkedList<T>& x, LinkedList<T>& y)
 {
-  //TODO
+  Node<T> *tmpHead = x.head;
+  size_t tmpSize = x.length;
+  x.head = y.head;
+  x.length = y.length;
+  y.head = tmpHead;
+  y.length = tmpSize;
 }
 
 template <typename T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& x)
 {
-  //TODO
-  return *this;
+  LinkedList<T> * tmp = new LinkedList<T>(x);
+  return *tmp;
 }
 
 template <typename T>
@@ -107,7 +121,7 @@ void LinkedList<T>::clear()
 {
   Node<T> *next = head;
   Node<T> *thisNode;
-  while(next != nullptr) {
+  while(next != nullptr) { // traverse list, getting next node and then deleting current node
     thisNode = next;
     next = thisNode->getNext();
     delete thisNode;
@@ -133,5 +147,11 @@ T LinkedList<T>::getEntry(std::size_t position) const
 template <typename T>
 void LinkedList<T>::setEntry(std::size_t position, const T& newValue)
 {
-  //TODO
+  if(position > 0 && position <= length) {
+    Node<T> *next = head;
+    for(unsigned i = 1; i < position; i++) {
+      next = next->getNext();
+    }
+    next->setItem(newValue);
+  } else if(position == length + 1) insert(position, newValue);
 }

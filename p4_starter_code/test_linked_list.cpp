@@ -52,6 +52,82 @@ TEST_CASE("remove") {
     REQUIRE(l.insert(1, 1));
     REQUIRE(l.getEntry(1) == 1);
 
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(l.getEntry(i) == i);
+    }
+
     REQUIRE_FALSE(l.remove(31));
 
+    REQUIRE(l.remove(29));
+    REQUIRE(l.getLength() == 29);
+    REQUIRE(l.getEntry(29) == 30);
+    
+    REQUIRE(l.remove(14));
+    REQUIRE(l.getEntry(28) == 30);
+    REQUIRE(l.getEntry(13) == 13);
+    REQUIRE(l.getEntry(14) == 15);
+
+    unsigned j = 0;
+    for(unsigned i = 1; i < 29; i++) {
+        if(i == 14 || i == 28) { j++;}
+
+        REQUIRE(l.getEntry(i) == i + j);
+    }
+}
+
+TEST_CASE("testing setEntry") {
+    lst l;
+
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(l.insert(i, i));
+        REQUIRE(l.getEntry(i) == i);
+    }
+
+    for(unsigned i = 30; i > 0; i--) {
+        l.setEntry(i, 30 - i);
+    }
+
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(l.getEntry(i) == 30 - i);
+    }
+
+    for(unsigned i = 30; i > 0; i--) {
+        l.setEntry(i, i);
+    }
+
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(l.getEntry(i) == i);
+    }
+}
+
+TEST_CASE("copy constructor") {
+     lst l;
+
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(l.insert(i, i));
+    }
+
+    lst b(l);
+    
+    REQUIRE(b.getLength() == l.getLength());
+
+    for(unsigned i = 1; i <= l.getLength(); i++) {
+        REQUIRE(b.getEntry(i) == l.getEntry(i));
+    }
+}
+
+TEST_CASE("copy assignment") {
+     lst l;
+
+    for(unsigned i = 1; i < 31; i++) {
+        REQUIRE(l.insert(i, i));
+    }
+
+    lst b = l;
+    
+    REQUIRE(b.getLength() == l.getLength());
+
+    for(unsigned i = 1; i <= l.getLength(); i++) {
+        REQUIRE(b.getEntry(i) == l.getEntry(i));
+    }
 }
