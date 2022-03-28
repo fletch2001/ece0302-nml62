@@ -2,6 +2,7 @@
 #define DEQUE_HPP
 
 #include "abstract_deque.hpp"
+#include "linked_list.tpp"
 
 template <typename T>
 class Deque: public AbstractDeque<T>{
@@ -48,7 +49,7 @@ class Deque: public AbstractDeque<T>{
 
   private:
   std::size_t size; // queue size
-  
+  LinkedList<T> dlst;
 
   // TODO
   
