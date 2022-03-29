@@ -2,14 +2,14 @@
 #define DEQUE_HPP
 
 #include "abstract_deque.hpp"
-#include "linked_list.tpp"
+#include "linked_list.hpp"
 
 template <typename T>
 class Deque: public AbstractDeque<T>{
   public:
 
   Deque(); // default constructor
-  Deque(const & Deque<T>); // copy constructor
+  Deque(const Deque &); // copy constructor
   Deque& operator=(const Deque &); // copy assignment
   ~Deque(); // destructor
 
