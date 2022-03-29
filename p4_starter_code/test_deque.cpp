@@ -41,5 +41,4 @@ TEST_CASE( "test deque", "[deque]" ) {
     REQUIRE_THROWS(q.popFront());
 
     REQUIRE(q.isEmpty());
-
 }
