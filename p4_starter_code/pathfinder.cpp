@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "image.h"
 #include "deque.hpp"
@@ -14,7 +15,8 @@ struct metadata {
 };
 
 bool find_start(metadata &, coord &);
-void search(metadata &, Image<Pixel> &, const coord &);
+//void search(metadata &, Image<Pixel> &, const coord &);
+void search(metadata &, const coord &);
 coord previousRow(coord);
 coord nextRow(coord);
 coord previousColumn(coord);
@@ -26,7 +28,7 @@ int nodes = 0;
 int main(int argc, char *argv[])
 {
   Image<Pixel> map = readFromFile(argv[1]); // read map in from file to Image object
-  Image<Pixel> explored = map; // explored map to keep track of explored coordinates
+  //Image<Pixel> explored = map; // explored map to keep track of explored coordinates
 
   metadata problemData{argv[2], map};
   // problemData.outputfile = argv[2];
@@ -48,7 +50,8 @@ int main(int argc, char *argv[])
     //std::cout << map(start.j, start.i).alpha << std::endl << map(start.i, start.j).blue << std::endl << map(start.i, start.j).green << std::endl << map(start.i, start.j).red << std::endl;
    // std::cout << (map(start.i, start.j) == RED) <<"\n\n\n\n";
 
-    search(problemData, explored, start);
+   // search(problemData, explored, start);
+    search(problemData, start);
   }
 }
 
@@ -68,15 +71,24 @@ bool find_start(metadata &m, coord &c) {
         }
       }
     }
-    return false;
+    return true;
 }
 
-void search(metadata &m, Image<Pixel> &explored, const coord & c) {
+void search(metadata &m, const coord & c) {
+  std::clog << "search start\n\n";
+//void search(metadata &m, Image<Pixel> &explored, const coord & c) {
   Image<Pixel> map = m.map; // extract map from metadata struct
-
+  Image<Pixel> path = m.map;
   //explored(c.i, c.j) = BLUE; // set explored node to blue
   
   Deque<coord> frontier;
+  bool explored[m.map.height()][m.map.width()];
+  for(unsigned i = 0; i < m.map.height(); i++) {
+    for(unsigned j = 0; j < m.map.width(); j++) {
+      explored[i][j] = 0; // clear explored array
+    }
+  }
+
   frontier.pushFront(c);
 /*
 
@@ -94,7 +106,7 @@ nC
   
 
   while(true) {
-    std::clog << "search\n";
+    //tstd::clog << "search\n";
     //std::cout << frontier.back().i << " " << frontier.back().j << std::endl;
      //search(map, explored, frontier.back(), outputfile); // check first node in queue
     
@@ -104,16 +116,22 @@ nC
 
       coord current = frontier.back();
       frontier.popBack(); // remove checked node from list
-      explored(current.i, current.j) = BLUE;
+      //explored(current.i, current.j) = BLUE;
+      if(explored[current.i][current.j] == 1) continue; // skip to next coordinate in queue
+      else explored[current.i][current.j] =1;
+      //explored[current.i][current.j] = 1;
+      //path(current.i, current.j) = BLUE;
+      //writeToFile(path, "explored-1.png");
 
-      if(current.i == 0 || current.j == 0 || current.j == map.width() - 1 || current.i == map.height() - 1 && (map(current.i, current.j) == WHITE)) { // case when exit is found
+      if(current.i == 0 || current.j == 0 || current.j == map.height() - 1|| current.i == map.width()  - 1 && (map(current.i, current.j) == WHITE)) { // case when exit is found
         //std::clog << "EXIT FOUND\n\n";
         map(current.i, current.j) = GREEN; // print exit
         exit_handler(1, metadata{m.outputfile, map}); // go to exit handler (pass in 1 for success)
       }
 
       if(current.i >= 1) { // check that not on edge and that map(prevrow) will not throw error
-          if(map(current.i - 1, current.j) == WHITE && explored(current.i - 1, current.j) == WHITE) {
+          //if(map(current.i - 1, current.j) == WHITE && explored(current.i - 1, current.j) == WHITE) {
+          if(map(current.i - 1, current.j) == WHITE && explored[current.i-1][current.j] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(previousRow(current)); // add previous row to frontier
             // std::cout << previousRow(current).i << " " << previousRow(current).j << " pushed to queue\n";
@@ -121,7 +139,8 @@ nC
         }
 
         if(current.i < map.height() - 1) { // check that map() will not go out of range and throw error
-          if(map(current.i + 1, current.j) == WHITE && explored(current.i + 1, current.j) == WHITE) {
+          //if(map(current.i + 1, current.j) == WHITE && explored(current.i + 1, current.j) == WHITE) {
+          if(map(current.i + 1, current.j) == WHITE && explored[current.i+1][current.j] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(nextRow(current));
             // std::cout << nextRow(current).i << " " << nextRow(current).j << " pushed to queue\n";
@@ -129,7 +148,8 @@ nC
         }
 
         if(current.j >= 1) { // check that map() will not go out of range and throw error
-          if(map(current.i, current.j - 1) == WHITE && explored(current.i, current.j - 1) == WHITE) {
+          //if(map(current.i, current.j - 1) == WHITE && explored(current.i, current.j - 1) == WHITE) {
+          if(map(current.i, current.j - 1) == WHITE && explored[current.i][current.j - 1] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(previousColumn(current));
             // std::cout << previousColumn(current).i << " " << previousColumn(current).j << " pushed to queue\n";
@@ -137,7 +157,8 @@ nC
         }
 
         if(current.j < map.width() - 1) {
-          if(map(current.i, current.j + 1) == WHITE && explored(current.i, current.j + 1) == WHITE) {
+          //if(map(current.i, current.j + 1) == WHITE && explored(current.i, current.j + 1) == WHITE) {
+          if(map(current.i, current.j + 1) == WHITE && explored[current.i][current.j + 1] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(nextColumn(current));
             // std::cout << nextColumn(current).i << " " << nextColumn(current).j << " pushed to queue\n";
@@ -166,16 +187,17 @@ void exit_handler(int e, metadata m) {
   if(e == 1) {
     writeToFile(m.map, m.outputfile); // write output to map
     std::cout << "solution found\n";
-    exit(0);
+    exit(EXIT_SUCCESS);
   }
   else if(e == -1) {
     writeToFile(m.map, m.outputfile);
     std::cout << "no solution found\n";
-    exit(1);
+    exit(EXIT_SUCCESS);
   }
   else if(e == -2) {
+    std::cout << "start error\n";
     std::cerr << "error\n";
     writeToFile(m.map, m.outputfile);
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 }
