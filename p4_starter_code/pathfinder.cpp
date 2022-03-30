@@ -75,9 +75,9 @@ bool find_start(metadata &m, coord &c) {
 }
 
 void search(metadata &m, const coord & c) {
-  std::clog << "search start\n\n";
+  //std::clog << "search start\n\n";
 //void search(metadata &m, Image<Pixel> &explored, const coord & c) {
-  Image<Pixel> map = m.map; // extract map from metadata struct
+  Image<Pixel> *map = &m.map; // extract map from metadata struct
   Image<Pixel> path = m.map;
   //explored(c.i, c.j) = BLUE; // set explored node to blue
   
@@ -118,29 +118,29 @@ nC
       frontier.popBack(); // remove checked node from list
       //explored(current.i, current.j) = BLUE;
       if(explored[current.i][current.j] == 1) continue; // skip to next coordinate in queue
-      else explored[current.i][current.j] =1;
+      else{ explored[current.i][current.j] =1; path(current.i, current.j) = BLUE; }
       //explored[current.i][current.j] = 1;
-      //path(current.i, current.j) = BLUE;
+      
       //writeToFile(path, "explored-1.png");
 
-      if(current.i == 0 || current.j == 0 || current.j == map.height() - 1|| current.i == map.width()  - 1 && (map(current.i, current.j) == WHITE)) { // case when exit is found
+      if(current.i == 0 || current.j == 0 || current.j == map->height() - 1|| current.i == map->width()  - 1 && (map->operator()(current.i, current.j) == WHITE)) { // case when exit is found
         //std::clog << "EXIT FOUND\n\n";
-        map(current.i, current.j) = GREEN; // print exit
-        exit_handler(1, metadata{m.outputfile, map}); // go to exit handler (pass in 1 for success)
+        map->operator()(current.i, current.j) = GREEN; // print exit
+        exit_handler(1, metadata{m.outputfile, *map}); // go to exit handler (pass in 1 for success)
       }
 
       if(current.i >= 1) { // check that not on edge and that map(prevrow) will not throw error
           //if(map(current.i - 1, current.j) == WHITE && explored(current.i - 1, current.j) == WHITE) {
-          if(map(current.i - 1, current.j) == WHITE && explored[current.i-1][current.j] == 0) {
+          if(map->operator()(current.i - 1, current.j) == WHITE && explored[current.i-1][current.j] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(previousRow(current)); // add previous row to frontier
             // std::cout << previousRow(current).i << " " << previousRow(current).j << " pushed to queue\n";
           }
         }
 
-        if(current.i < map.height() - 1) { // check that map() will not go out of range and throw error
+        if(current.i < map->height() - 1) { // check that map() will not go out of range and throw error
           //if(map(current.i + 1, current.j) == WHITE && explored(current.i + 1, current.j) == WHITE) {
-          if(map(current.i + 1, current.j) == WHITE && explored[current.i+1][current.j] == 0) {
+          if(map->operator()(current.i + 1, current.j) == WHITE && explored[current.i+1][current.j] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(nextRow(current));
             // std::cout << nextRow(current).i << " " << nextRow(current).j << " pushed to queue\n";
@@ -149,16 +149,16 @@ nC
 
         if(current.j >= 1) { // check that map() will not go out of range and throw error
           //if(map(current.i, current.j - 1) == WHITE && explored(current.i, current.j - 1) == WHITE) {
-          if(map(current.i, current.j - 1) == WHITE && explored[current.i][current.j - 1] == 0) {
+          if(map->operator()(current.i, current.j - 1) == WHITE && explored[current.i][current.j - 1] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(previousColumn(current));
             // std::cout << previousColumn(current).i << " " << previousColumn(current).j << " pushed to queue\n";
           } 
         }
 
-        if(current.j < map.width() - 1) {
+        if(current.j < map->width() - 1) {
           //if(map(current.i, current.j + 1) == WHITE && explored(current.i, current.j + 1) == WHITE) {
-          if(map(current.i, current.j + 1) == WHITE && explored[current.i][current.j + 1] == 0) {
+          if(map->operator()(current.i, current.j + 1) == WHITE && explored[current.i][current.j + 1] == 0) {
             //std::cout << "q:" << frontier.isEmpty() << "\n";
             frontier.pushFront(nextColumn(current));
             // std::cout << nextColumn(current).i << " " << nextColumn(current).j << " pushed to queue\n";
