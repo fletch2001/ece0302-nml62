@@ -101,8 +101,32 @@ template <typename KeyType, typename ItemType>
 bool BinarySearchTree<KeyType, ItemType>::insert(
     const KeyType& key, const ItemType& item)
 {
-    if(search(key, root, )) return false;    
-    //return false;
+    Node<KeyType, ItemType> *parent, *curr;
+    parent = root;
+    curr = nullptr;
+
+    Node<KeyType, ItemType> *tmp = new Node<KeyType, ItemType>;
+    tmp->data = item;
+    tmp->key = key;
+
+    if (isEmpty()) // empty tree
+    {   
+        root = tmp;
+        tmp = nullptr;
+        return true;
+    }
+
+    search(key, curr, parent);
+    if(curr->key == key) return false; // case when key is already in tree
+
+    if(key > curr->key) {
+            curr->right = tmp; // set parent right key if 
+    } else{
+            curr->left = tmp;
+    }
+
+    tmp = nullptr;
+    return true;
 }
 
 template <typename KeyType, typename ItemType>
@@ -133,29 +157,70 @@ bool BinarySearchTree<KeyType, ItemType>::retrieve(
 template <typename KeyType, typename ItemType>
 bool BinarySearchTree<KeyType, ItemType>::remove(KeyType key)
 {
-    if (isEmpty())
-        return false; // empty tree
+    
+    if(isEmpty()) return false;
 
-    // TODO
+    Node<KeyType, ItemType> *curr, *tmp;
+    curr = nullptr;
+    tmp = nullptr;
+    search(key, curr, tmp);
+    //tmp = nullptr;
+    tmp = nullptr;
 
+    // if(tmp == 0) {
+    //     tmp = nullptr;
+    //     curr = nullptr;
+    //     return false; // if item does not exist in list
+    // }
+    if(curr == root) {
+        delete root;
+        root = nullptr;
+        curr = nullptr;
+        return true;
+    }
 
-    // case one thing in the tree
-
-    // case, found deleted item at leaf
-
-    // case, item to delete has only a right child
-
-    // case, item to delete has only a left child
-
-    // case, item to delete has two children
-
-    return false; // default should never get here
+    // case one thing in the tree or has no children
+    if((curr->right == 0) && (curr->left == 0)) {
+        delete curr;
+        tmp = nullptr;
+        curr = nullptr;
+        return true;
+    } else if(curr->right == 0 && curr->left != 0) { // case when only left child
+        curr->data = curr->left->data;
+        curr->key = curr->left->key;
+        curr->left = curr->left->left;
+        curr->right = curr->left->right;
+        delete curr->left;
+        curr->left = nullptr;
+        return true;
+    } else if(curr->left == 0 && curr->right != 0) { // case when only right child
+        curr->data = curr->right->data;
+        curr->key = curr->right->key;
+        curr->left = curr->right->left;
+        curr->right = curr->right->right;
+        delete curr->right;
+        curr->right = nullptr;
+        return true;
+    } else { // case when has two children
+        curr->data = curr->right->data;
+        curr->key = curr->right->key;
+        delete curr->right;
+        curr->right = nullptr;
+        return true;
+    }
+   return false;
 }
 
 template <typename KeyType, typename ItemType>
 void BinarySearchTree<KeyType, ItemType>::inorder(Node<KeyType, ItemType>* curr,
     Node<KeyType, ItemType>*& in, Node<KeyType, ItemType>*& parent)
 {
+    if(curr->left == 0) {
+            in = curr;
+            return;
+    } else {
+        inorder(curr->left, in, curr);
+    }
     // TODO 
     // move right once
     // move left as far as possible

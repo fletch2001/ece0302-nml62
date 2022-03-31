@@ -46,11 +46,14 @@ TEST_CASE("Test Retrieve", "[retrieve]") {
 TEST_CASE("Test Remove", "[remove]") {
     TreeType bst1;
 
+    REQUIRE_FALSE(bst1.remove(10));
+
     bst1.insert(10, 10);
     bst1.insert(5, 5);
     bst1.insert(15, 15);
     bst1.insert(12, 12);
     bst1.insert(18, 18);
+    bst1.remove(10);
 
     int item;
 
@@ -68,7 +71,6 @@ TEST_CASE("Test Remove", "[remove]") {
 
     bst1.remove(15);
     REQUIRE(!bst1.retrieve(15, item));
-
     REQUIRE(bst1.isEmpty());
 }
 
