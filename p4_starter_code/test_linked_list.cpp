@@ -114,6 +114,11 @@ TEST_CASE("copy constructor") {
     for(unsigned i = 1; i <= l.getLength(); i++) {
         REQUIRE(b.getEntry(i) == l.getEntry(i));
     }
+
+    b.remove(l.getLength());
+
+    REQUIRE_FALSE(b.getLength() == l.getLength());
+    
 }
 
 TEST_CASE("copy assignment") {
@@ -130,4 +135,8 @@ TEST_CASE("copy assignment") {
     for(unsigned i = 1; i <= l.getLength(); i++) {
         REQUIRE(b.getEntry(i) == l.getEntry(i));
     }
+
+    l.clear();
+
+    REQUIRE(!b.isEmpty());
 }

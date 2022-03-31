@@ -48,10 +48,7 @@ class Deque: public AbstractDeque<T>{
   T back() const;
 
   private:
-  std::size_t size; // queue size
-  LinkedList<T> dlst;
-
-  // TODO
+  LinkedList<T> dlst; // linked list for holding queue members
   
 };
 

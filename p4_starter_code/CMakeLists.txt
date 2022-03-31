@@ -41,7 +41,9 @@ add_test(test01-compare compare ${CMAKE_SOURCE_DIR}/tests/output01.png output01.
 add_test(test02 pathfinder ${CMAKE_SOURCE_DIR}/tests/maze02.png output02.png)
 add_test(test02-compare compare ${CMAKE_SOURCE_DIR}/tests/output02.png output02.png)
 add_test(test04 pathfinder ${CMAKE_SOURCE_DIR}/tests/maze04.png output04.png)
-set_tests_properties(test04 PROPERTIES WILL_FAIL TRUE)
+add_test(test07 pathfinder ${CMAKE_SOURCE_DIR}/tests/maze07.png output07.png)
+add_test(test08 pathfinder ${CMAKE_SOURCE_DIR}/tests/maze00.png)
+set_tests_properties(test04 test07 test08 PROPERTIES WILL_FAIL TRUE)
 
 add_custom_target(submission COMMAND
   ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_BINARY_DIR}/p4_pathfinder.zip" --format=zip

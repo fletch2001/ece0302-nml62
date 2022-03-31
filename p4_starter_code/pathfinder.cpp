@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
 {
   Image<Pixel> map;
 
+  if(argv[1] == 0) exit_handler("missing input file argument");
+  else if(argv[2] == 0) exit_handler("missing output file argument");
+
   // check if map is readable
   try {
     map = readFromFile(argv[1]); // read map in from file to Image object
@@ -38,10 +41,8 @@ int main(int argc, char *argv[])
     exit_handler("invalid input file/no input file found"); // catch error and go to exit handler for no map
   }
 
+  // initialize problem metadata struct to pass into search
   metadata problemData{argv[2], map};
-  // problemData.outputfile = argv[2];
-  // problemData.map = map;
-
   unsigned width, height;
   
   width = map.width(); // get width
@@ -52,13 +53,8 @@ int main(int argc, char *argv[])
 //*** i is row
 //*** j is column
 
-  // finding start point (red sqaure)
+  // finding start point (red sqaure), will return true if one red square is found and if maze is invalid per specification will go to error handler
   if(find_start(problemData, start)) {
-    //std::cout << start.i << " " << start.j << std::endl;
-    //std::cout << map(start.j, start.i).alpha << std::endl << map(start.i, start.j).blue << std::endl << map(start.i, start.j).green << std::endl << map(start.i, start.j).red << std::endl;
-   // std::cout << (map(start.i, start.j) == RED) <<"\n\n\n\n";
-
-   // search(problemData, explored, start);
     search(problemData, start);
   }
 }
@@ -228,12 +224,22 @@ coord nextColumn(coord c) {
 // handles exit routine depending on exit status (-2 for error, -1 for no solution found, 1 for solution found)
 void exit_handler(int e, metadata m) {
   if(e == 1) {
-    writeToFile(m.map, m.outputfile); // write output to map
+    // try to write to output file and go to error exit handler if unable to
+    try {
+      writeToFile(m.map, m.outputfile); // write output to map
+    } catch(std::exception e) {
+      exit_handler("unable to write to output file");
+    }
     std::cout << "solution found\n";
     exit(EXIT_SUCCESS); // exit_success
   }
   else if(e == -1) {
-    writeToFile(m.map, m.outputfile); // write solution to map
+    // try to write to output file and go to error exit handler if unable to
+    try {
+      writeToFile(m.map, m.outputfile); // write output to map
+    } catch(std::exception e) {
+      exit_handler("unable to write to output file");
+    }
     std::cout << "no solution found\n";
     exit(EXIT_SUCCESS); // exit_success
   }

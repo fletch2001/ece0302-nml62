@@ -41,8 +41,20 @@ void LinkedList<T>::swap(LinkedList<T>& x, LinkedList<T>& y)
 template <typename T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& x)
 {
-  LinkedList<T> * tmp = new LinkedList<T>(x);
-  return *tmp;
+  this->length = x.length;
+  this->head = new Node<T>(x.head->getItem());
+  Node<T> *temp = x.head->getNext();
+  Node<T> *thisNext = head;
+  while(temp != nullptr) {
+    thisNext->setNext(new Node<T>(temp->getItem()));
+    thisNext = thisNext->getNext();
+    temp = temp->getNext();
+  }
+  temp = nullptr;
+  thisNext = nullptr;
+  return *this;
+  // LinkedList<T> * tmp = new LinkedList<T>(x);
+  // return *tmp;
 }
 
 template <typename T>
@@ -119,18 +131,9 @@ bool LinkedList<T>::remove(std::size_t position)
 template <typename T>
 void LinkedList<T>::clear()
 {
-  Node<T> *next = head;
-  Node<T> *thisNode;
-  while(next != nullptr) { // traverse list, getting next node and then deleting current node
-    thisNode = next;
-    next = thisNode->getNext();
-    delete thisNode;
+  while(!isEmpty()) {
+    remove(1);
   }
-  next = nullptr;
-  thisNode = nullptr;
-
-  length = 0;
-
 }
 
 template <typename T>
