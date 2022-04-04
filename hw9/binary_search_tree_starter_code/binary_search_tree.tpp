@@ -1,4 +1,5 @@
 #include "binary_search_tree.h"
+#include <vector>
 
 template <typename KeyType, typename ItemType>
 BinarySearchTree<KeyType, ItemType>::BinarySearchTree()
@@ -157,6 +158,7 @@ bool BinarySearchTree<KeyType, ItemType>::retrieve(
 template <typename KeyType, typename ItemType>
 bool BinarySearchTree<KeyType, ItemType>::remove(KeyType key)
 {
+    // << root->data << "\n";
     
     if(isEmpty()) return false;
 
@@ -164,50 +166,87 @@ bool BinarySearchTree<KeyType, ItemType>::remove(KeyType key)
     curr = nullptr;
     tmp = nullptr;
     search(key, curr, tmp);
-    //tmp = nullptr;
-    tmp = nullptr;
 
-    // if(tmp == 0) {
-    //     tmp = nullptr;
-    //     curr = nullptr;
-    //     return false; // if item does not exist in list
-    // }
-    if(curr == root) {
-        delete root;
-        root = nullptr;
-        curr = nullptr;
-        return true;
+    
+    if(!tmp) { // no parent to curr; therefore curr is root
+
     }
-
+    
+    
     // case one thing in the tree or has no children
+
+
     if((curr->right == 0) && (curr->left == 0)) {
-        delete curr;
-        tmp = nullptr;
-        curr = nullptr;
-        return true;
+        if(curr == root) {
+            delete root;
+            root = nullptr;
+            curr = nullptr;
+            return true;
+        } else {
+            if(tmp->left == curr) {
+                delete curr;
+                tmp->left = nullptr;
+                curr = nullptr;
+                return true;
+            } else if(tmp->right == curr) {
+                delete curr;
+                curr = nullptr;
+                tmp->right = nullptr;
+                return true;
+            } else {
+                delete curr;
+                curr = nullptr;
+                return true;
+            }
+        }
+
     } else if(curr->right == 0 && curr->left != 0) { // case when only left child
+        // Node<KeyType, ItemType> *tmp = curr; // get curr node (node to remove);
+        if(curr == root) {
+            root->data = curr->left->data;
+            root->key = curr->left->key;
+        }
+        // go to left, get right child from left, left right child with parent until at end
         curr->data = curr->left->data;
         curr->key = curr->left->key;
-        curr->left = curr->left->left;
-        curr->right = curr->left->right;
+        
+        if(curr->left->right != 0) {
+            curr = curr->left->right; // get right child of left child of node to remove
+            while(curr->right != 0) {
+                tmp = curr;
+                curr->key = curr->right->key;
+                curr->data = curr->right->data;
+                curr = curr->right;
+            }
+
+            delete curr;
+            curr = nullptr;
+            tmp->right = nullptr;
+            tmp = nullptr;
+            return true;
+        }
+
         delete curr->left;
         curr->left = nullptr;
+        tmp = nullptr;
         return true;
-    } else if(curr->left == 0 && curr->right != 0) { // case when only right child
-        curr->data = curr->right->data;
-        curr->key = curr->right->key;
-        curr->left = curr->right->left;
-        curr->right = curr->right->right;
+        
+    } else {
+        if(curr == root) {
+            root->data = curr->right->data;
+            root->key = curr->right->key;
+        } else {
+            curr->data = curr->right->data;
+            curr->key = curr->right->key;
+        }
+
         delete curr->right;
         curr->right = nullptr;
+        // check for mem leaks
+
         return true;
-    } else { // case when has two children
-        curr->data = curr->right->data;
-        curr->key = curr->right->key;
-        delete curr->right;
-        curr->right = nullptr;
-        return true;
-    }
+    } 
+    
    return false;
 }
 
@@ -215,15 +254,21 @@ template <typename KeyType, typename ItemType>
 void BinarySearchTree<KeyType, ItemType>::inorder(Node<KeyType, ItemType>* curr,
     Node<KeyType, ItemType>*& in, Node<KeyType, ItemType>*& parent)
 {
-    if(curr->left == 0) {
-            in = curr;
-            return;
-    } else {
-        inorder(curr->left, in, curr);
+    if(curr != 0){
+        parent = curr;
+        inorder(curr->left, in, parent);
+        in = curr;
+        inorder(curr->right, in, parent);
     }
-    // TODO 
-    // move right once
-    // move left as far as possible
+    // parent = 0;
+    // curr = curr->right;
+    // if(curr->left == 0) {
+    //         in = curr;
+    //         return;
+    // } else {
+    //     parent = curr;
+    //     inorder(curr->left, in, curr);
+    // }
 }
 
 template <typename KeyType, typename ItemType>
@@ -257,9 +302,44 @@ void BinarySearchTree<KeyType, ItemType>::search(KeyType key,
 
 template<typename KeyType, typename ItemType>
 void BinarySearchTree<KeyType, ItemType>::treeSort(ItemType arr[], int size) {
-    // TODO: check for duplicate items in the input array
 
-    // TODO: use the tree to sort the array items
+    for(unsigned i = 1; i < size; i++ ) {
+        for(unsigned j = 0; j < size; j++) {
+            if(i == j) {}
+            else {
+                if(arr[i] == arr[j]) {
+                    return;
+                    //std::cout << "d\n"; return; // case when duplicate item found 
+                }
+            }
+        }
+    }
 
-    // TODO: overwrite input array values with sorted values
+    ItemType min = arr[0];
+    for(unsigned i = 1; i < size; i++) {
+        if(arr[i] < min) {
+            min = arr[i];
+        }
+    }
+   
+    for(unsigned i = 0;  i< size; i++) {
+        insert(arr[i], arr[i]);
+    }
+
+    Node<KeyType, ItemType> *tmp, *curr, *parent;
+    unsigned i = 0;
+    inordertraversal(root, arr, i);
+    tmp = nullptr;
+    curr = nullptr;
+}
+
+
+template<typename KeyType, typename ItemType>
+void BinarySearchTree<KeyType, ItemType>::inordertraversal(Node<KeyType, ItemType>* start, ItemType arr[], unsigned &i) {
+   if(start != nullptr) {
+        inordertraversal(start->left, arr, i);
+        //td::cout << start->data << "\n";
+        arr[i++] = start->data;
+        inordertraversal(start->right, arr, i);
+   } else return;
 }

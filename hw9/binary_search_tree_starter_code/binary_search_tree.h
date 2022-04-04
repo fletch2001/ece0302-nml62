@@ -4,6 +4,7 @@
 
 #include <stack>
 #include <cassert>
+#include <vector>
 
 template <typename KeyType, typename ItemType>
 class BinarySearchTree
@@ -46,6 +47,8 @@ private:
 
     void search(KeyType key, Node<KeyType, ItemType>*& curr,
         Node<KeyType, ItemType>*& parent);
+    //void inordertraversal(Node<KeyType, ItemType>* start, std::vector<ItemType> &v, unsigned int i);
+    void inordertraversal(Node<KeyType, ItemType>* start, ItemType arr[], unsigned int &i);
 };
 
 #include "binary_search_tree.tpp"

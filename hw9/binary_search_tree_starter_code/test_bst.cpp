@@ -46,14 +46,11 @@ TEST_CASE("Test Retrieve", "[retrieve]") {
 TEST_CASE("Test Remove", "[remove]") {
     TreeType bst1;
 
-    REQUIRE_FALSE(bst1.remove(10));
-
     bst1.insert(10, 10);
     bst1.insert(5, 5);
     bst1.insert(15, 15);
     bst1.insert(12, 12);
     bst1.insert(18, 18);
-    bst1.remove(10);
 
     int item;
 
@@ -71,6 +68,7 @@ TEST_CASE("Test Remove", "[remove]") {
 
     bst1.remove(15);
     REQUIRE(!bst1.retrieve(15, item));
+
     REQUIRE(bst1.isEmpty());
 }
 
@@ -98,3 +96,31 @@ TEST_CASE("Test Copy Assign", "[copy assign]") {
     
 }
 
+TEST_CASE("test treesort") {
+    TreeType bst1;
+    int arr[] = {3, 2, 6, 7};
+    bst1.treeSort(arr, 4);
+    REQUIRE(arr[0] == 2);
+    REQUIRE(arr[1] == 3);
+    REQUIRE(arr[2] == 6);
+    REQUIRE(arr[3] == 7);
+
+    int arr_b[] {3, 4, 1, 3};
+    bst1.treeSort(arr_b, 4);
+    REQUIRE(arr_b[0] == 3);
+    REQUIRE(arr_b[1] == 4);
+    REQUIRE(arr_b[2] == 1);
+    REQUIRE(arr_b[3] == 3);
+
+    bst1.remove(3);
+    bst1.remove(2);
+    bst1.remove(6);
+    bst1.remove(7);
+
+    REQUIRE(bst1.isEmpty());
+
+    int arr_c[] = {5, 4, 6, 2, 3, 9, 0, 1};
+    bst1.treeSort(arr_c, 8);
+    REQUIRE(arr_c[0] == 0);
+    REQUIRE(arr_c[7] == 9);
+}
