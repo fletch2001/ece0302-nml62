@@ -82,7 +82,6 @@ bool find_start(metadata &m, coord &c) {
 
 void search(metadata &m, const coord &c) {
     // std::clog << "search start\n\n";
-    // void search(metadata &m, Image<Pixel> &explored, const coord & c) {
     Image<Pixel> *map = &m.map;  // extract map from metadata struct
     Image<Pixel> path = m.map;
     // explored(c.i, c.j) = BLUE; // set explored node to blue
