@@ -5,91 +5,51 @@
 template <typename T>
 State<T> frontier_queue<T>::pop() {
   unsigned i = 0;
-  // if(queue.size() > 4) {
-  // std::cout << "      " << queue[i].getFCost() << "\n";
-  // std::cout << "   " << queue[2 * i + 1].getFCost() << "    " << queue[2 * i + 2].getFCost() << "\n";
-  // std::cout << queue[2 * (2 * i + 1) + 1].getFCost() << "    " << queue[2 * (2 * i + 1) + 2].getFCost() << "\n\n";
-  // } 
 
-  std::cout << "PRE_POP\n\n";
-  for(unsigned i = 0; i < queue.size(); i++) {
-    std::cout << queue[i].getFCost() << " ";
-  }
-
-  std::cout << "\n\n\n";
-
+  // save item to pop
   State<T> return_state = queue[0];
+  
+  // pull end node to front
   queue[0] = queue[queue.size() - 1];
   queue.pop_back(); // remove previous root (in return_state)
 
-  while(i < queue.size()) {
-    if(queue[i].getFCost() > queue[(2*i) + 1].getFCost() || queue[i].getFCost() > queue[(2*i) + 2].getFCost()) {
-      if(queue[(2*i) + 1].getFCost() < queue[(2*i) + 2].getFCost()) {
-        State<T> tmp = queue[i];
-        queue[i] = queue[(2*i) + 1];
-        queue[(2*i) + 1] = tmp;
-        i = (2*i) + 1; // follow max item to left child branch
-      } else {
-        State<T> tmp = queue[i];
-        queue[i] = queue[(2*i) + 2];
-        queue[(2*i) + 2] = tmp;
-        i = (2*i) + 2; // follow max item to right child branch
-      } 
-    } else break;
+  unsigned left;
+  unsigned right;
+
+  bool sorted = false;
+  unsigned smallest = i;
+
+  // keep sorting until sorted
+  while(!sorted) {
+    
+    // calculate left and right child indexes
+    left = 2*i + 1;
+    right = 2*i + 2;
+    smallest = i;
+
+    // check left child
+    if(left < queue.size() && queue[left].getFCost() < queue[smallest].getFCost()) {
+      smallest = left;
+    }
+
+    // check right child
+    if(right < queue.size() && queue[right].getFCost() < queue[smallest].getFCost()) {
+      smallest = right;
+    }
+
+    // if smallest value is not current index, keep sorting
+    if(smallest != i) {
+      State<T> tmp = queue[smallest];
+      queue[smallest] = queue[i];
+      queue[i] = tmp;
+      i++;
+    } else {
+      sorted = true;
+    }
   }
 
-  std::cout << "POST_POP\n\n";
-  for(unsigned i = 0; i < queue.size(); i++) {
-    std::cout << queue[i].getFCost() << " ";
-  }
-
-  std::cout << "\n\n\n";
-
+  // return popped item
   return return_state;
-  // State<T> return_item = queue[0];
-  // queue[0] = queue[queue.size() - 1] ; // move last node up to top of queue
-  // queue.pop_back(); // remove deleted node (originally root)
-  // //queue[queue.size() - 1] = return_item;
-
-  // std::cout << "PRE_POP\n\n";
-  // for(unsigned i = 0; i < queue.size(); i++) {
-  //   std::cout << queue[i].getFCost() << " ";
-  // }
-
-  // std::cout << "\n\n\n";
-
-  // unsigned i = 0;
-
-  // while(i < queue.size()) {
-  //   if(queue[2*i].getFCost() < queue[2*i + 1].getFCost()) { // l is smaller than r -> test left and parent 
-  //     if(queue[i].getFCost() > queue[2*i].getFCost()) {
-  //       State<T> tmp = queue[i];
-  //       queue[i] = queue[2*i];
-  //       queue[2*i] = tmp;
-  //        if(queue[(2*i) + 1] != 0) {
-  //           i = (2 * i) + 1;  
-  //       } else {
-  //       return return_item;
-  //     }
-  //   } else { // r is smaller than r -> test r and parent
-  //     if(queue[i].getFCost() > queue[2*i + 1].getFCost()) {
-  //       State<T> tmp = queue[i];
-  //       queue[i] = queue[2*i + 1];
-  //       queue[2*i + 1] = tmp;
-  //       if(queue[(2*i) + 2] != 0) {
-  //           i = (2 * i) + 2;  
-  //       } else {
-  //       return return_item;
-  //     }
-  //   }
-  // }
-
-  // return return_item;
-  //TODO
-  
-  //implement this the same way we implemented pop in the heap lecture. Compare using getFCost
-
-  // needs return statement
 
 }
 
@@ -100,12 +60,6 @@ void frontier_queue<T>::push(const T &p, std::size_t cost, std::size_t heur) {
   unsigned i = queue.size() - 1;
   unsigned j = i >> 1;
 
-  // for(unsigned k = 0; k < queue.size(); k++) {
-  //   std::cout << queue[k].getFCost() << " ";
-  // }
-
-  // std::cout << "\n\n";
-
   while((i >= 1) && queue[j].getFCost() > queue[i].getFCost()) {
     // bubble up:
     State<T> bubble_up = queue[i]; // grab node from end to be bubbled up
@@ -114,13 +68,6 @@ void frontier_queue<T>::push(const T &p, std::size_t cost, std::size_t heur) {
     i = j;
     j = j >> 1; // get new parent index
   }
-
-  for(unsigned i = 0; i < queue.size(); i++) {
-    std::cout << queue[i].getFCost() << " ";
-  }
-
-  std::cout << "\n\n\n\n";
-
 }
 
 template <typename T>
@@ -142,8 +89,15 @@ bool frontier_queue<T>::contains(const T &p) {
 template <typename T>
 void frontier_queue<T>::replaceif(const T &p, std::size_t cost) {
 
-  //TODO
-
+  // compare cost once item is found in vector
+  for(unsigned i = 0; i < queue.size(); i++) {
+    if(queue[i].getValue() == p) {
+      if(cost < queue[i].getPathCost()) {
+        queue[i].updatePathCost(cost);
+        break;
+      }
+    }
+  }
 }
 
 
